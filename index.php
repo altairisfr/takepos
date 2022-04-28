@@ -394,6 +394,8 @@ function MoreProducts(moreorless) {
 	console.log("MoreProducts");
 	var maxproduct = <?php echo ($MAXPRODUCT - 2); ?>;
 
+	if ($('#search_pagination').val() != '') return Search2("<?php echo $keyCodeForEnter; ?>", moreorless);
+
 	if (moreorless=="more"){
 		$('#proimg31').animate({opacity: '0.5'}, 1);
 		$('#proimg31').animate({opacity: '1'}, 100);
@@ -405,6 +407,7 @@ function MoreProducts(moreorless) {
 		if (pageproducts==0) return; //Return if no less pages
 		pageproducts=pageproducts-1;
 	}
+
 	$.getJSON('<?php echo DOL_URL_ROOT ?>/takepos/ajax/ajax.php?action=getProducts&category='+currentcat, function(data) {
 		console.log("Call ajax.php (in MoreProducts) to get Products of category "+currentcat);
 
@@ -570,9 +573,9 @@ function New() {
  * @param   {int}			keyCodeForEnter     Key code for "enter"
  * return   {void}
  */
-function Search2(keyCodeForEnter) {
+function Search2(keyCodeForEnter, moreorless) {
 
-	if ($('#search').val() == '') {
+	if ($('#search').val() == '' && $('#search_pagination').val() == '') {
 		$("[id^=prowatermark]").html("");
 		$("[id^=prodesc]").text("");
 		$("[id^=probutton]").text("");
@@ -585,6 +588,13 @@ function Search2(keyCodeForEnter) {
 	}
 
 	console.log("Search2 Call ajax search to replace products keyCodeForEnter="+keyCodeForEnter);
+
+	var search_term  = $('#search').val();
+	var search_start = 0;
+	if (search_term == '') {
+		search_term = $('#search_pagination').val();
+		search_start = $('#search_start_'+moreorless).val();
+	}
 
 	var search = false;
 	var eventKeyCode = window.event.keyCode;
@@ -601,7 +611,8 @@ function Search2(keyCodeForEnter) {
 		search2_timer = setTimeout(function(){
 			pageproducts = 0;
 			jQuery(".wrapper2 .catwatermark").hide();
-			$.getJSON('<?php echo DOL_URL_ROOT ?>/takepos/ajax/ajax.php?action=search&term=' + $('#search').val(), function (data) {
+			var nbsearchresults = 0;
+			$.getJSON('<?php echo DOL_URL_ROOT ?>/takepos/ajax/ajax.php?action=search&term=' + search_term + '&search_start=' + search_start, function (data) {
 				for (i = 0; i < <?php echo ($MAXPRODUCT - 2) ?>; i++) {
 					if (typeof (data[i]) == "undefined") {
 						$("#prowatermark" + i).html("");
@@ -643,6 +654,7 @@ function Search2(keyCodeForEnter) {
 					$hookmanager->executeHooks('completeJSProductDisplay', $parameters);
 					print $hookmanager->resPrint;
 					?>
+					nbsearchresults++;
 				}
 				searching = false;
 			}).always(function (data) {
@@ -668,6 +680,23 @@ function Search2(keyCodeForEnter) {
 					}
 					else ClearSearch();
 				}
+				// memorize search_term and start for pagination
+				$("#search_pagination").val($("#search").val());
+				if ($("#search_start_less").val() == 0) {
+					$("#prodiv<?php echo $MAXPRODUCT - 2; ?>").hide();
+				}
+				else {
+					var search_start_less = Math.min(0, parseInt($("#search_start_less").val()) - <?php echo $MAXPRODUCT - 2;?>);
+					$("#search_start_less").val(search_start_less);
+				}
+				if (nbsearchresults != <?php echo $MAXPRODUCT - 2; ?>) {
+					$("#prodiv<?php echo $MAXPRODUCT - 1; ?>").hide();
+				}
+				else {
+					var search_start_more = parseInt($("#search_start_less").val()) + <?php echo $MAXPRODUCT ;?>;
+					$("#search_start_more").val(search_start_more);
+				}
+
 			});
 		}, 500); // 500ms delay
 	}
@@ -993,7 +1022,7 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 					print '<input type="text" id="search_category" name="search_category" onkeyup="searchCategory('.$keyCodeForEnter.');" placeholder="'.$langs->trans("Category").'" autofocus>';
 				}
 				?>
-				<input type="text" id="search" name="search" onkeyup="Search2(<?php echo $keyCodeForEnter; ?>);" placeholder="<?php echo $langs->trans("Search"); ?>" autofocus>
+				<input type="text" id="search" name="search" onkeyup="Search2(<?php echo $keyCodeForEnter; ?>, null);" placeholder="<?php echo $langs->trans("Search"); ?>" autofocus>
 				<a onclick="ClearSearch();"><span class="fa fa-backspace"></span></a>
 				<a href="<?php echo DOL_URL_ROOT.'/'; ?>" target="backoffice" rel="opener"><!-- we need rel="opener" here, we are on same domain and we need to be able to reuse this tab several times -->
 				<span class="fas fa-home"></span></a>
@@ -1274,7 +1303,7 @@ if (!empty($conf->global->TAKEPOS_WEIGHING_SCALE)) {
 		if (!empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 			print '<!-- Show the search input text -->'."\n";
 			print '<div class="margintoponly">';
-			print '<input type="text" id="search" name="search" onkeyup="Search2('.$keyCodeForEnter.');" style="width:80%;width:calc(100% - 51px);font-size: 150%;" placeholder="'.$langs->trans("Search").'" autofocus> ';
+			print '<input type="text" id="search" name="search" onkeyup="Search2('.$keyCodeForEnter.', null);" style="width:80%;width:calc(100% - 51px);font-size: 150%;" placeholder="'.$langs->trans("Search").'" autofocus> ';
 			print '<a class="marginleftonly hideonsmartphone" onclick="ClearSearch();">'.img_picto('', 'searchclear').'</a>';
 			print '</div>';
 		}
@@ -1375,6 +1404,9 @@ if (!empty($conf->global->TAKEPOS_WEIGHING_SCALE)) {
 					</div>
 					<?php } ?>
 					<div class="catwatermark" id='prowatermark<?php echo $count; ?>'>...</div>
+					<input type="hidden" id="search_start_less" value="0">
+					<input type="hidden" id="search_start_more" value="0">
+					<input type="hidden" id="search_pagination" value="">
 				</div>
 		<?php
 		$count++;
