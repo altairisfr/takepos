@@ -1342,10 +1342,10 @@ if (!empty($conf->global->TAKEPOS_WEIGHING_SCALE)) {
 			<?php
 			if ($count == ($MAXCATEG - 2)) {
 				//echo '<img class="imgwrapper" src="img/arrow-prev-top.png" height="100%" id="catimg'.$count.'" />';
-				echo '<span class="fa fa-chevron-left centerinmiddle" style="font-size: 5em;"></span>';
+				echo '<span class="fa fa-chevron-left centerinmiddle" style="font-size: 5em; cursor: pointer;"></span>';
 			} elseif ($count == ($MAXCATEG - 1)) {
 				//echo '<img class="imgwrapper" src="img/arrow-next-top.png" height="100%" id="catimg'.$count.'" />';
-				echo '<span class="fa fa-chevron-right centerinmiddle" style="font-size: 5em;"></span>';
+				echo '<span class="fa fa-chevron-right centerinmiddle" style="font-size: 5em; cursor: pointer;"></span>';
 			} else {
 				if (!getDolGlobalString('TAKEPOS_HIDE_CATEGORY_IMAGES')) {
 					echo '<img class="imgwrapper" height="100%" id="catimg'.$count.'" />';
