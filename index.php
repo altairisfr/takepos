@@ -696,7 +696,7 @@ function Search2(keyCodeForEnter, moreorless) {
 				}
 				else {
 					$("#prodiv<?php echo $MAXPRODUCT - 1; ?> span").show();
-					var search_start_more = parseInt(search_start) + parseInt(<?php echo $MAXPRODUCT - 3;?>);
+					var search_start_more = parseInt(search_start) + parseInt(<?php echo $MAXPRODUCT - 2;?>);
 					$("#search_start_more").val(search_start_more);
 				}
 
