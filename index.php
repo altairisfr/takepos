@@ -575,7 +575,17 @@ function New() {
  */
 function Search2(keyCodeForEnter, moreorless) {
 
-	if ($('#search').val() == '' && $('#search_pagination').val() == '') {
+	console.log("Search2 Call ajax search to replace products keyCodeForEnter="+keyCodeForEnter);
+
+	var search_term  = $('#search').val();
+	var search_start = 0;
+	var search_limit = <?php echo $MAXPRODUCT - 2; ?>;
+	if (moreorless != null) {
+		search_term = $('#search_pagination').val();
+		search_start = $('#search_start_'+moreorless).val();
+	}
+
+	if (search_term == '') {
 		$("[id^=prowatermark]").html("");
 		$("[id^=prodesc]").text("");
 		$("[id^=probutton]").text("");
@@ -585,16 +595,6 @@ function Search2(keyCodeForEnter, moreorless) {
 		$("[id^=proimg]").attr("src", "genimg/empty.png");
 		$("[id^=prodiv]").data("rowid", "");
 		return;
-	}
-
-	console.log("Search2 Call ajax search to replace products keyCodeForEnter="+keyCodeForEnter);
-
-	var search_term  = $('#search').val();
-	var search_start = 0;
-	var search_limit = <?php echo $MAXPRODUCT - 2; ?>;
-	if (moreorless != null) {
-		search_term = $('#search_pagination').val();
-		search_start = $('#search_start_'+moreorless).val();
 	}
 
 	var search = false;
