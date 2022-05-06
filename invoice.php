@@ -1233,6 +1233,13 @@ if (getDolGlobalString('TAKEPOS_BAR_RESTAURANT')) {
 	print $langs->trans("Products");
 }
 print '</td>';
+
+// complete header by hook
+$parameters=array();
+$reshook=$hookmanager->executeHooks('completeTakePosInvoiceHeader', $parameters, $invoice, $action);    // Note that $action and $object may have been modified by some hooks
+if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+print $hookmanager->resPrint;
+
 if (empty($_SESSION["basiclayout"]) || $_SESSION["basiclayout"] != 1) {
 	print '<td class="linecolqty right">'.$langs->trans('ReductionShort').'</td>';
 	print '<td class="linecolqty right">'.$langs->trans('Qty').'</td>';
@@ -1271,6 +1278,7 @@ if (empty($_SESSION["basiclayout"]) || $_SESSION["basiclayout"] != 1) {
 } elseif ($mobilepage == "invoice") {
 	print '<td class="linecolqty right">'.$langs->trans('Qty').'</td>';
 }
+
 print "</tr>\n";
 
 
@@ -1386,6 +1394,13 @@ if ($placeid > 0) {
 					}
 				}
 				$htmlsupplements[$line->fk_parent_line] .= '</td>';
+
+				// complete line by hook
+				$parameters=array('line' => $line);
+				$reshook=$hookmanager->executeHooks('completeTakePosInvoiceParentLine', $parameters, $invoice, $action);    // Note that $action and $object may have been modified by some hooks
+				if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+				$htmlsupplements[$line->fk_parent_line] .= $hookmanager->resPrint;
+
 				if (empty($_SESSION["basiclayout"]) || $_SESSION["basiclayout"] != 1) {
 					$htmlsupplements[$line->fk_parent_line] .= '<td class="right">'.vatrate($line->remise_percent, true).'</td>';
 					$htmlsupplements[$line->fk_parent_line] .= '<td class="right">'.$line->qty.'</td>';
@@ -1445,6 +1460,7 @@ if ($placeid > 0) {
 					}
 				}
 			}
+
 			if (!empty($line->array_options['options_order_notes'])) {
 				$htmlforlines .= "<br>(".$line->array_options['options_order_notes'].")";
 			}
@@ -1466,6 +1482,13 @@ if ($placeid > 0) {
 					$htmlforlines .= '<br><div class="clearboth nowraponall">'.get_date_range($line->date_start, $line->date_end).'</div>';
 				}
 				$htmlforlines .= '</td>';
+
+				// complete line by hook
+				$parameters=array('line' => $line);
+				$reshook=$hookmanager->executeHooks('completeTakePosInvoiceLine', $parameters, $invoice, $action);    // Note that $action and $object may have been modified by some hooks
+				if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+				$htmlforlines .= $hookmanager->resPrint;
+
 				$htmlforlines .= '<td class="right">'.vatrate($line->remise_percent, true).'</td>';
 				$htmlforlines .= '<td class="right">';
 				if (!empty($conf->stock->enabled) && !empty($user->rights->stock->mouvement->lire)) {
@@ -1525,6 +1548,7 @@ if ($placeid > 0) {
 				}
 				$htmlforlines .= '</td>';
 			}
+
 			$htmlforlines .= '</tr>'."\n";
 			$htmlforlines .= empty($htmlsupplements[$line->id]) ? '' : empty($htmlsupplements[$line->id]);
 
