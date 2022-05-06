@@ -185,7 +185,6 @@ $reshook=$hookmanager->executeHooks('doActions', $parameters, $invoice, $action)
 if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
 if (empty($reshook)) {
-
 	// Action to record a payment on a TakePOS invoice
 	if ($action == 'valid' && $user->rights->facture->creer) {
 		$bankaccount = 0;
@@ -677,11 +676,9 @@ if (empty($reshook)) {
 				} else {
 					if (empty($user->rights->takepos->editlines) || (empty($user->rights->takepos->editorderedlines) && $line->special_code == "4")) {
 						dol_htmloutput_errors($langs->trans("NotEnoughPermissions", "TakePos"), null, 1);
-					}
-					elseif ($conf->global->TAKEPOS_CHANGE_PRICE_HT == 1) {
+					} elseif ($conf->global->TAKEPOS_CHANGE_PRICE_HT == 1) {
 						$result = $invoice->updateline($line->id, $line->desc, $number, $line->qty, $line->remise_percent, $line->date_start, $line->date_end, $line->tva_tx, $line->localtax1_tx, $line->localtax2_tx, 'HT', $line->info_bits, $line->product_type, $line->fk_parent_line, 0, $line->fk_fournprice, $line->pa_ht, $line->label, $line->special_code, $line->array_options, $line->situation_percent, $line->fk_unit);
-					}
-					else {
+					} else {
 						$result = $invoice->updateline($line->id, $line->desc, $number, $line->qty, $line->remise_percent, $line->date_start, $line->date_end, $line->tva_tx, $line->localtax1_tx, $line->localtax2_tx, 'TTC', $line->info_bits, $line->product_type, $line->fk_parent_line, 0, $line->fk_fournprice, $line->pa_ht, $line->label, $line->special_code, $line->array_options, $line->situation_percent, $line->fk_unit);
 					}
 				}
