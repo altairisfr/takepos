@@ -126,30 +126,37 @@ print "</td></tr>\n";
 
 // Hide stock on line 
 print '<tr class="oddeven"><td>';
-print $langs->trans('HideStockLine');
+print $langs->trans('HideStockOnLine');
 print '<td colspan="2">';
 print ajax_constantonoff("TAKEPOS_HIDE_STOCK_ON_LINE", array(), $conf->entity, 0, 0, 1, 0);
 print "</td></tr>\n";
 
 // Only the products in stock
 print '<tr class="oddeven"><td>';
-print $langs->trans('ProductStock');
+print $langs->trans('ShowOnlyProductInStock');
 print '<td colspan="2">';
 print ajax_constantonoff("TAKEPOS_PRODUCT_IN_STOCK", array(), $conf->entity, 0, 0, 1, 0);
 print "</td></tr>\n";
 
 // View description of the categories
 print '<tr class="oddeven"><td>';
-print $langs->trans('CategoryDescription');
+print $langs->trans('ShowCategoryDescription');
 print '<td colspan="2">';
 print ajax_constantonoff("TAKEPOS_SHOW_CATEGORY_DESCRIPTION", array(), $conf->entity, 0, 0, 1, 0);
 print "</td></tr>\n";
 
 // View reference of products
 print '<tr class="oddeven"><td>';
-print $langs->trans('ProductReference');
+print $langs->trans('ShowProductReference');
 print '<td colspan="2">';
 print ajax_constantonoff("TAKEPOS_SHOW_PRODUCT_REFERENCE", array(), $conf->entity, 0, 0, 1, 0);
+print "</td></tr>\n";
+
+// Change price excl. taxes (HT) and not price incl. taxes (TTC)
+print '<tr class="oddeven"><td>';
+print $langs->trans('UsePriceHT');
+print '<td colspan="2">';
+print ajax_constantonoff("TAKEPOS_CHANGE_PRICE_HT", array(), $conf->entity, 0, 0, 1, 0);
 print "</td></tr>\n";
 
 print '</table>';
