@@ -201,12 +201,13 @@ if(localStorage.hasKeyboard) {
 }
 */
 
-function ClearSearch() {
+function ClearSearch(clearSearchResults) {
 	console.log("ClearSearch");
 	$("#search").val('');
 	<?php if ($conf->browser->layout == 'classic') { ?>
 	setFocusOnSearchField();
 	<?php } ?>
+	if (typeof clearSearchResults != "undefined") $("#search").trigger('keyup');
 }
 
 // Set the focus on search field but only on desktop. On tablet or smartphone, we don't to avoid to have the keyboard open automatically
