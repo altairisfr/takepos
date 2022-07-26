@@ -558,10 +558,10 @@ if (empty($reshook)) {
 
 			// complete line by hook
 			$parameters = array('prod' => $prod, 'line' => $line);
-			$reshook=$hookmanager->executeHooks('completeTakePosAddLine', &$parameters, $invoice, $action);    // Note that $action and $line may have been modified by some hooks
+			$reshook=$hookmanager->executeHooks('completeTakePosAddLine', $parameters, $invoice, $action);    // Note that $action and $line may have been modified by some hooks
 			if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
-			$line = $parameters['line'];
+			if (!empty($hookmanager->resArray)) $line = $hookmanager->resArray;
 
 			$idoflineadded = $invoice->addline($line['description'], $line['price'], 1, $line['tva_tx'], $line['localtax1_tx'], $line['localtax2_tx'], $idproduct, $line['remise_percent'], '', 0, 0, 0, '', $price_base_type, $line['price_ttc'], $prod->type, -1, 0, '', 0, $parent_line, null, '', '', $line['array_options'], 100, '', null, 0);
 		}
