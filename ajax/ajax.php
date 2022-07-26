@@ -140,7 +140,11 @@ if ($action == 'getProducts') {
 	}
 	$sql = 'SELECT p.rowid, p.ref, p.label, p.tosell, p.tobuy, p.barcode, p.price ';
 	if ($conf->global->TAKEPOS_PRODUCT_IN_STOCK == 1) {
-		$sql .= ', ps.reel';
+		if ( ! empty($conf->global->{'CASHDESK_ID_WAREHOUSE'.$_SESSION['takeposterminal']})) {
+			$sql .= ', ps.reel';
+		} else {
+			$sql .= ', SUM(ps.reel)';
+		}
 	}
 	// Add fields from hooks
 	$parameters=array();
@@ -151,7 +155,10 @@ if ($action == 'getProducts') {
 	if ($conf->global->TAKEPOS_PRODUCT_IN_STOCK == 1) {
 		$sql .= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_stock as ps';
 		$sql .= ' ON (p.rowid = ps.fk_product';
-		$sql .= ' AND ps.fk_entrepot = '.((int) $db->escape($conf->global->{'CASHDESK_ID_WAREHOUSE'.$_SESSION['takeposterminal']})) .')';
+		if ( ! empty($conf->global->{'CASHDESK_ID_WAREHOUSE'.$_SESSION['takeposterminal']})) {
+			$sql .= ' AND ps.fk_entrepot = '.((int) $db->escape($conf->global->{'CASHDESK_ID_WAREHOUSE'.$_SESSION['takeposterminal']}));
+		}
+		$sql .= ')';
 	}
 	// Add tables from hooks
 	$parameters=array();
@@ -172,6 +179,10 @@ if ($action == 'getProducts') {
 	$parameters=array();
 	$reshook=$hookmanager->executeHooks('printFieldListWhere', $parameters);
 	$sql.=$hookmanager->resPrint;
+
+	if ($conf->global->TAKEPOS_PRODUCT_IN_STOCK == 1 && empty($conf->global->{'CASHDESK_ID_WAREHOUSE'.$_SESSION['takeposterminal']})) {
+		$sql .= ' GROUP BY p.rowid';
+	}
 
 	// load only one page of products
 	$sql.= $db->plimit($search_limit, $search_start);
