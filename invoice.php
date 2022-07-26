@@ -508,6 +508,7 @@ if (empty($reshook)) {
 
 		$datapriceofproduct = $prod->getSellPrice($mysoc, $customer, 0);
 
+		$qty = GETPOSTISSET('qty') ? GETPOST('qty', 'int') : 1;
 		$price = $datapriceofproduct['pu_ht'];
 		$price_ttc = $datapriceofproduct['pu_ttc'];
 		//$price_min = $datapriceofproduct['price_min'];
@@ -540,7 +541,7 @@ if (empty($reshook)) {
 		if (!empty($conf->global->TAKEPOS_GROUP_SAME_PRODUCT)) {
 			foreach ($invoice->lines as $line) {
 				if ($line->product_ref == $prod->ref) {
-					$result = $invoice->updateline($line->id, $line->desc, $line->subprice, $line->qty + 1, $line->remise_percent, $line->date_start, $line->date_end, $line->tva_tx, $line->localtax1_tx, $line->localtax2_tx, 'HT', $line->info_bits, $line->product_type, $line->fk_parent_line, 0, $line->fk_fournprice, $line->pa_ht, $line->label, $line->special_code, $line->array_options, $line->situation_percent, $line->fk_unit);
+					$result = $invoice->updateline($line->id, $line->desc, $line->subprice, $line->qty + $qty, $line->remise_percent, $line->date_start, $line->date_end, $line->tva_tx, $line->localtax1_tx, $line->localtax2_tx, 'HT', $line->info_bits, $line->product_type, $line->fk_parent_line, 0, $line->fk_fournprice, $line->pa_ht, $line->label, $line->special_code, $line->array_options, $line->situation_percent, $line->fk_unit);
 					if ($result < 0) {
 						dol_htmloutput_errors($invoice->error, $invoice->errors, 1);
 					} else {
@@ -563,7 +564,7 @@ if (empty($reshook)) {
 
 			if (!empty($hookmanager->resArray)) $line = $hookmanager->resArray;
 
-			$idoflineadded = $invoice->addline($line['description'], $line['price'], 1, $line['tva_tx'], $line['localtax1_tx'], $line['localtax2_tx'], $idproduct, $line['remise_percent'], '', 0, 0, 0, '', $price_base_type, $line['price_ttc'], $prod->type, -1, 0, '', 0, $parent_line, null, '', '', $line['array_options'], 100, '', null, 0);
+			$idoflineadded = $invoice->addline($line['description'], $line['price'], $qty, $line['tva_tx'], $line['localtax1_tx'], $line['localtax2_tx'], $idproduct, $line['remise_percent'], '', 0, 0, 0, '', $price_base_type, $line['price_ttc'], $prod->type, -1, 0, '', 0, (!empty($parent_line)) ? $parent_line : '', null, '', '', $line['array_options'], 100, '', null, 0);
 		}
 
 		$invoice->fetch($placeid);
