@@ -995,7 +995,7 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 			<span class="hideonsmartphone">
 			<?php echo (! empty($conf->global->{"TAKEPOS_TERMINAL_NAME_".$_SESSION["takeposterminal"]}) ? $conf->global->{"TAKEPOS_TERMINAL_NAME_".$_SESSION["takeposterminal"]} : $langs->trans("TerminalName", $_SESSION["takeposterminal"])); ?>
 			</span>
-			<?php echo " ";
+			<?php
 			echo '<span class="hideonsmartphone"> - '.dol_print_date(dol_now(), "day").'</span>';
 			?>
 			</a>
