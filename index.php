@@ -993,14 +993,9 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 			<a class="topnav-terminalhour" onclick="ModalBox('ModalTerminal');">
 			<span class="fa fa-cash-register"></span>
 			<span class="hideonsmartphone">
-			<?php echo $langs->trans("Terminal"); ?>
+			<?php echo (! empty($conf->global->{"TAKEPOS_TERMINAL_NAME_".$_SESSION["takeposterminal"]}) ? $conf->global->{"TAKEPOS_TERMINAL_NAME_".$_SESSION["takeposterminal"]} : $langs->trans("TerminalName", $_SESSION["takeposterminal"])); ?>
 			</span>
 			<?php echo " ";
-			if ($_SESSION["takeposterminal"] == "") {
-				echo "1";
-			} else {
-				echo $_SESSION["takeposterminal"];
-			}
 			echo '<span class="hideonsmartphone"> - '.dol_print_date(dol_now(), "day").'</span>';
 			?>
 			</a>
@@ -1054,10 +1049,10 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 		<h3><?php print $langs->trans("TerminalSelect"); ?></h3>
 	</div>
 	<div class="modal-body">
-		<button type="button" class="block" onclick="location.href='index.php?setterminal=1'"><?php print $langs->trans("Terminal"); ?> 1</button>
+		<button type="button" class="block" onclick="location.href='index.php?setterminal=1'"><?php print (! empty($conf->global->TAKEPOS_TERMINAL_NAME_1) ? $conf->global->TAKEPOS_TERMINAL_NAME_1 : $langs->trans("TerminalName", 1)); ?></button>
 		<?php
 		for ($i = 2; $i <= $conf->global->TAKEPOS_NUM_TERMINALS; $i++) {
-			print '<button type="button" class="block" onclick="location.href=\'index.php?setterminal='.$i.'\'">'.$langs->trans("Terminal").' '.$i.'</button>';
+			print '<button type="button" class="block" onclick="location.href=\'index.php?setterminal='.$i.'\'">'.(! empty($conf->global->{"TAKEPOS_TERMINAL_NAME_".$i}) ? $conf->global->{"TAKEPOS_TERMINAL_NAME_".$i} : $langs->trans("TerminalName", $i)).'</button>';
 		}
 		?>
 	</div>
