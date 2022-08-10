@@ -43,6 +43,7 @@ if (!defined('NOREQUIREHTML')) {
 
 require '../main.inc.php'; // Load $user and permissions
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
 
 $langs->loadLangs(array("main", "bills", "cashdesk", "banks"));
 
@@ -54,6 +55,7 @@ if (empty($user->rights->takepos->run)) {
 	accessforbidden();
 }
 
+$hookmanager->initHooks(array('takeposinvoice'));
 
 /*
  * View
@@ -430,6 +432,14 @@ if ($conf->global->TAKEPOS_DELAYED_PAYMENT) {
 	print '<button type="button" class="calcbutton2" onclick="Validate(\'delayed\');">'.$langs->trans("Reported").'</button>';
 }
 ?>
+
+<?php
+// Add code from hooks
+$parameters=array();
+$hookmanager->executeHooks('completePayment', $parameters, $invoice);
+print $hookmanager->resPrint;
+?>
+
 </div>
 
 </body>
