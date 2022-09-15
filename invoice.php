@@ -47,6 +47,7 @@ if (!defined('INCLUDE_PHONEPAGE_FROM_PUBLIC_PAGE')) {
 	require '../main.inc.php';
 }
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
@@ -1112,24 +1113,30 @@ $( document ).ready(function() {
 	console.log("Set customer info and sales in header placeid=<?php echo $placeid; ?> status=<?php echo $invoice->statut; ?>");
 
 	<?php
-	$s = $langs->trans("Customer");
+	$s = getDolGlobalString('TAKEPOS_CHOOSE_CONTACT') ? '' : $langs->trans("Customer");
 	if ($invoice->id > 0 && ($invoice->socid != $conf->global->$constforcompanyid)) {
 		$s = $soc->name;
 	}
 	if (getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) {
 		$c = $langs->trans("TakePOSContact");
-		// commented by christophe battarelif ($contact->id > 0) {
-			// commented by christophe battarel$c = $contact->name;
-		// commented by christophe battarel}
+		$contactids = $invoice->getIdContact('external', 'BILLING');
+		$contactid = $contactids[0];
+		if ($contactid > 0) {
+			$contact = new Contact($db);
+			$contact->fetch($contactid);
+			$c = $contact->getFullName($langs);
+		}
 	}
 	?>
 
 	$("#customerandsales").html('');
 
-	$("#customerandsales").append('<a class="valignmiddle tdoverflowmax300 minwidth100" style="font-size: 2em; font-weight: bolder;" id="customer" onclick="Customer();" title="<?php print dol_escape_js($s); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s); ?></a>');
+	<?php if ( ! getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) { ?>
+		$("#customerandsales").append('<a class="valignmiddle tdoverflowmax300 minwidth100" style="font-size: 2em; font-weight: bolder;" id="customer" onclick="Customer();" title="<?php print dol_escape_js($s); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s); ?></a>');
+	<?php } ?>
 
 	<?php if (getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) { ?>
-		$("#customerandsales").append('<a class="valignmiddle tdoverflowmax300 minwidth100" style="font-size: 2em; font-weight: bolder;" id="contact" onclick="Contact(\'<?php print dol_escape_js($s); ?>\');" title="<?php print dol_escape_js($c); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($c); ?></a>');
+		$("#customerandsales").append('<a class="valignmiddle /*tdoverflowmax300*/ minwidth100" style="font-size: 2em; font-weight: bolder;" id="contact" onclick="Contact(\'<?php print dol_escape_js($s); ?>\');" title="<?php print dol_escape_js($s." - ".$c); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s." - ".$c); ?></a>');
 	<?php } ?>
 
 	<?php
