@@ -962,6 +962,7 @@ $( document ).ready(function() {
 	//IF NO TERMINAL SELECTED
 	if ($_SESSION["takeposterminal"] == "") {
 		print "ModalBox('ModalTerminal');";
+		print "Contact('Choose Thirdparty');";
 	}
 
 	if (getDolGlobalString('TAKEPOS_CONTROL_CASH_OPENING')) {
@@ -995,7 +996,7 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 		<div class="topnav">
 			<div class="topnav-left">
 			<div class="inline-block valignmiddle">
-			<a class="topnav-terminalhour" onclick="ModalBox('ModalTerminal');">
+			<a class="topnav-terminalhour" <?php echo empty($conf->global->TAKEPOS_FIX_TERMINAL) ? "onclick=\"ModalBox('ModalTerminal');\"" : ""; ?>>
 			<span class="fa fa-cash-register"></span>
 			<span class="hideonsmartphone">
 			<?php echo (! empty($conf->global->{"TAKEPOS_TERMINAL_NAME_".$_SESSION["takeposterminal"]}) ? $conf->global->{"TAKEPOS_TERMINAL_NAME_".$_SESSION["takeposterminal"]} : $langs->trans("TerminalName", $_SESSION["takeposterminal"])); ?>
