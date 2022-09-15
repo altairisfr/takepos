@@ -79,7 +79,7 @@ if ($setcurrency != "") {
 
 $_SESSION["urlfrom"] = '/takepos/index.php';
 
-$langs->loadLangs(array("bills", "orders", "commercial", "cashdesk", "receiptprinter", "banks"));
+$langs->loadLangs(array("bills", "orders", "commercial", "cashdesk", "receiptprinter", "banks", "takepos@takepos"));
 
 $categorie = new Categorie($db);
 
@@ -1130,7 +1130,7 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 			<button type="button" class="calcbutton" onclick="Edit(1);">1</button>
 			<button type="button" class="calcbutton" onclick="Edit(2);">2</button>
 			<button type="button" class="calcbutton" onclick="Edit(3);">3</button>
-			<button type="button" id="reduction" class="calcbutton2" onclick="Edit('r');"><?php echo $langs->trans("ReductionShort"); ?></button>
+			<button type="button" id="reduction" class="calcbutton2" onclick="Edit('r');"><?php echo $langs->trans("LineDiscount"); ?></button>
 			<button type="button" class="calcbutton" onclick="Edit(0);">0</button>
 			<button type="button" class="calcbutton" onclick="Edit('.');">.</button>
 			<button type="button" class="calcbutton poscolorblue" onclick="Edit('c');">C</button>
@@ -1196,9 +1196,11 @@ if (empty($conf->global->TAKEPOS_BAR_RESTAURANT)) {
 if (!empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 	$menus[$r++] = array('title'=>'<span class="far fa-building paddingrightonly"></span><div class="trunc">'.$langs->trans("Customer").'</div>', 'action'=>'Customer();');
 }
-$menus[$r++] = array('title'=>'<span class="fa fa-history paddingrightonly"></span><div class="trunc">'.$langs->trans("History").'</div>', 'action'=>'History();');
+if ( ! getDolGlobalString('TAKEPOS_HIDE_HISTORY')) {
+	$menus[$r++] = array('title'=>'<span class="fa fa-history paddingrightonly"></span><div class="trunc">'.$langs->trans("History").'</div>', 'action'=>'History();');
+}
 $menus[$r++] = array('title'=>'<span class="fa fa-cube paddingrightonly"></span><div class="trunc">'.$langs->trans("FreeZone").'</div>', 'action'=>'FreeZone();');
-$menus[$r++] = array('title'=>'<span class="fa fa-percent paddingrightonly"></span><div class="trunc">'.$langs->trans("Reduction").'</div>', 'action'=>'Reduction();');
+$menus[$r++] = array('title'=>'<span class="fa fa-percent paddingrightonly"></span><div class="trunc">'.$langs->trans("InvoiceDiscount").'</div>', 'action'=>'Reduction();');
 $menus[$r++] = array('title'=>'<span class="far fa-money-bill-alt paddingrightonly"></span><div class="trunc">'.$langs->trans("Payment").'</div>', 'action'=>'CloseBill();');
 
 if (getDolGlobalString('TAKEPOS_DIRECT_PAYMENT')) {
