@@ -1136,7 +1136,7 @@ $( document ).ready(function() {
 	<?php } ?>
 
 	<?php if (getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) { ?>
-		$("#customerandsales").append('<a class="valignmiddle /*tdoverflowmax300*/ minwidth100" style="font-size: 2em; font-weight: bolder;" id="contact" onclick="Contact(\'<?php print dol_escape_js($s); ?>\');" title="<?php print dol_escape_js($s." - ".$c); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s." - ".$c); ?></a>');
+		$("#customerandsales").append('<a class="valignmiddle /*tdoverflowmax300*/ minwidth100" style="font-size: 2em; font-weight: bolder;" id="contact" onclick="Contact(\'<?php print dol_escape_js("Choose thirdparty"); ?>\');" title="<?php print dol_escape_js($s." - ".$c); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s." - ".$c); ?></a>');
 	<?php } ?>
 
 	<?php
