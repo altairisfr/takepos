@@ -54,7 +54,7 @@ $hookmanager->initHooks(array('takeposinvoice'));
 
 global $mysoc;
 
-$langs->loadLangs(array("companies", "commercial", "bills", "cashdesk", "stocks", "banks"));
+$langs->loadLangs(array("companies", "commercial", "bills", "cashdesk", "stocks", "banks", "takepos@takepos"));
 
 $id = GETPOST('id', 'int');
 $action = GETPOST('action', 'aZ09');
@@ -1116,11 +1116,21 @@ $( document ).ready(function() {
 	if ($invoice->id > 0 && ($invoice->socid != $conf->global->$constforcompanyid)) {
 		$s = $soc->name;
 	}
+	if (getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) {
+		$c = $langs->trans("TakePOSContact");
+		// commented by christophe battarelif ($contact->id > 0) {
+			// commented by christophe battarel$c = $contact->name;
+		// commented by christophe battarel}
+	}
 	?>
 
 	$("#customerandsales").html('');
 
 	$("#customerandsales").append('<a class="valignmiddle tdoverflowmax300 minwidth100" style="font-size: 2em; font-weight: bolder;" id="customer" onclick="Customer();" title="<?php print dol_escape_js($s); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s); ?></a>');
+
+	<?php if (getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) { ?>
+		$("#customerandsales").append('<a class="valignmiddle tdoverflowmax300 minwidth100" style="font-size: 2em; font-weight: bolder;" id="contact" onclick="Contact(\'<?php print dol_escape_js($s); ?>\');" title="<?php print dol_escape_js($c); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($c); ?></a>');
+	<?php } ?>
 
 	<?php
 	$sql = "SELECT rowid, datec, ref FROM ".MAIN_DB_PREFIX."facture";

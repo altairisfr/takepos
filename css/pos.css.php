@@ -199,7 +199,7 @@ button.actionbutton {
 	vertical-align: middle;
 	text-align: center;
 	overflow: visible; /* removes extra width in IE */
-	width: calc(<?php print (empty(getDolGlobalString('TAKEPOS_DIRECT_PAYMENT')) && getDolGlobalString('TAKEPOS_HIDE_HISTORY')) ? '100':'33.33' ?>% - 2px);
+	width: calc(<?php print getDolGlobalString('TAKEPOS_BIG_CART') ? '100':'33.33' ?>% - 2px);
 	height: calc(25% - 2px);
 	margin: 1px;
 	   border-width: 0;
@@ -369,7 +369,7 @@ div.paymentbordline
 
 .div1{
 	height:100%;
-	width: <?php print (empty(getDolGlobalString('TAKEPOS_DIRECT_PAYMENT')) && getDolGlobalString('TAKEPOS_HIDE_HISTORY')) ? '57':'34' ?>%;
+	width: <?php print getDolGlobalString('TAKEPOS_BIG_CART') ? '57':'34' ?>%;
 	float: left;
 	text-align: center;
 	box-sizing: border-box;
@@ -397,7 +397,7 @@ div.paymentbordline
 
 .div3{
 	height: 100%;
-	width: <?php print (empty(getDolGlobalString('TAKEPOS_DIRECT_PAYMENT')) && getDolGlobalString('TAKEPOS_HIDE_HISTORY')) ? '10':'33' ?>%;
+	width: <?php print getDolGlobalString('TAKEPOS_BIG_CART') ? '10':'33' ?>%;
 	float: left;
 	box-sizing: border-box;
 	padding-top: 0;
