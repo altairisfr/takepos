@@ -1132,11 +1132,11 @@ $( document ).ready(function() {
 	$("#customerandsales").html('');
 
 	<?php if ( ! getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) { ?>
-		$("#customerandsales").append('<a class="valignmiddle tdoverflowmax300 minwidth100" style="font-size: 2em; font-weight: bolder;" id="customer" onclick="Customer();" title="<?php print dol_escape_js($s); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s); ?></a>');
+		$("#customerandsales").append('<a class="valignmiddle tdoverflowmax300 minwidth100" style="font-size: 1em; font-weight: bolder;" id="customer" onclick="Customer();" title="<?php print dol_escape_js($s); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s); ?></a>');
 	<?php } ?>
 
 	<?php if (getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) { ?>
-		$("#customerandsales").append('<a class="valignmiddle /*tdoverflowmax300*/ minwidth100" style="font-size: 2em; font-weight: bolder;" id="contact" onclick="Contact(\'<?php print dol_escape_js("Choose thirdparty"); ?>\');" title="<?php print dol_escape_js($s." - ".$c); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s." - ".$c); ?></a>');
+		$("#customerandsales").append('<a class="valignmiddle tdoverflowmax500 minwidth100" style="font-size: 1.5em; font-weight: bolder;" id="contact" onclick="Contact(\'<?php print dol_escape_js("Choose thirdparty"); ?>\');" title="<?php print dol_escape_js(empty($s) ? $c : $s." - ".$c); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js(empty($s) ? $c : $s." - ".$c); ?></a>');
 	<?php } ?>
 
 	<?php
