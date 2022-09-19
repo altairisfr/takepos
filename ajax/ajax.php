@@ -42,6 +42,7 @@ if (!defined('NOBROWSERNOTIF')) {
 
 require '../../main.inc.php'; // Load $user and permissions
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
 $category = GETPOST('category', 'alphanohtml');	// Can be id of category or 'supplements'
 $action = GETPOST('action', 'aZ09');
@@ -59,6 +60,18 @@ $hookmanager->initHooks(array('takeposproductsearch'));
 /*
  * View
  */
+if ($action == 'closeTerminal') {
+	if ($conf->global->{'TAKEPOS_LOCK_TERMINAL_' . $_SESSION["takeposterminal"]}) {
+		dolibarr_set_const($db, 'TAKEPOS_TERMINAL_LOCKED_' . $_SESSION["takeposterminal"], '', 'chaine', 0, '', $conf->entity);
+	}
+	unset($_SESSION["takeposterminal"]);
+	exit;
+}
+
+if ($action == 'lockTerminal') {
+	dolibarr_set_const($db, 'TAKEPOS_TERMINAL_LOCKED_' . GETPOST('term'), $user->login, 'chaine', 0, '', $conf->entity);
+	exit;
+}
 
 if ($action == 'getProducts') {
 	$object = new Categorie($db);

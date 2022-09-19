@@ -142,7 +142,6 @@ if ($conf->global->TAKEPOS_COLOR_THEME == 1) {
 <?php
 $categories = $categorie->get_full_arbo('product', (($conf->global->TAKEPOS_ROOT_CATEGORY_ID > 0) ? $conf->global->TAKEPOS_ROOT_CATEGORY_ID : 0), 1);
 
-
 // Search root category to know its level
 //$conf->global->TAKEPOS_ROOT_CATEGORY_ID=0;
 $levelofrootcategory = 0;
@@ -200,6 +199,10 @@ if(localStorage.hasKeyboard) {
 	console.log("has keyboard from localStorage")
 }
 */
+
+function closeTerminal() {
+	$.post("<?php echo DOL_URL_ROOT ?>/takepos/ajax/ajax.php?action=closeTerminal", function(data) { ModalBox('ModalTerminal'); });
+}
 
 function ClearSearch(clearSearchResults) {
 	console.log("ClearSearch");
@@ -955,30 +958,55 @@ function WeighingScale(){
 }
 
 $( document ).ready(function() {
-	PrintCategories(0);
-	LoadProducts(0);
-	Refresh();
 	<?php
+	// get user authorized terminals
+	$nb_auth_terms = 0;
+	$numterminals = max(1, $conf->global->TAKEPOS_NUM_TERMINALS);
+	for ($i = 1; $i <= $numterminals; $i++) {
+		if ($user->rights->takepos->{'access_takepos_' . $i}) {
+			$curterm = $i;
+			$nb_auth_terms++;
+		}
+	}
+
 	// TERMINAL SELECTION IF NOT SET
 	if ($_SESSION["takeposterminal"] == "") {
-		$nb_auth_terms = 0;
-		$numterminals = max(1, $conf->global->TAKEPOS_NUM_TERMINALS);
-		for ($i = 1; $i <= $numterminals; $i++) {
-			if ($user->rights->takepos->{'access_takepos_' . $i}) {
-				$curterm = $i;
-				$nb_auth_terms++;
-			}
-		}
 		if (empty($nb_auth_terms)) {
 			accessforbidden();
 		} else if ($nb_auth_terms > 1) {
 			print "ModalBox('ModalTerminal');";
 		} else {
-			$_SESSION["takeposterminal"] = $curterm;
+			$terminal_name = (! empty($conf->global->{"TAKEPOS_TERMINAL_NAME_".$curterm}) ? $conf->global->{"TAKEPOS_TERMINAL_NAME_".$curterm} : $langs->transnoentities("TerminalName", $curterm));
+			if ($conf->global->{'TAKEPOS_LOCK_TERMINAL_' . $curterm} &&  ! empty($conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $curterm}) && $conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $curterm} != $user->login) {
+				print "alert('" . dol_escape_js($langs->transnoentities("TerminalLocked", $terminal_name, $conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $curterm})) . "');";
+				unset($_SESSION["takeposterminal"]);
+				print 'window.location = "'.DOL_URL_ROOT.'/index.php";';
+			} elseif ($conf->global->{'TAKEPOS_LOCK_TERMINAL_' . $curterm}) {
+				print '$.post("'.DOL_URL_ROOT . '/takepos/ajax/ajax.php?action=lockTerminal&term='.$curterm.'");';
+			}
 		}
 		print "Contact('Choose Thirdparty');";
 	}
+	elseif ($conf->global->{'TAKEPOS_LOCK_TERMINAL_' . $_SESSION["takeposterminal"]} &&  ! empty($conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $_SESSION["takeposterminal"]}) && $conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $_SESSION["takeposterminal"]} != $user->login) {
+			$terminal_name = (! empty($conf->global->{"TAKEPOS_TERMINAL_NAME_".$_SESSION["takeposterminal"]}) ? $conf->global->{"TAKEPOS_TERMINAL_NAME_".$_SESSION["takeposterminal"]} : $langs->transnoentities("TerminalName", $_SESSION["takeposterminal"]));
+			print "alert('" . dol_escape_js($langs->transnoentities("TerminalLocked", $terminal_name, $conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $_SESSION["takeposterminal"]})) . "');";
+			unset($_SESSION["takeposterminal"]);
+			if ($nb_auth_terms > 1) {
+				print "ModalBox('ModalTerminal');";
+			} else {
+				print 'window.location = "'.DOL_URL_ROOT.'/index.php";';
+			}
+	}
+	elseif ($conf->global->{'TAKEPOS_LOCK_TERMINAL_' . $_SESSION["takeposterminal"]}) {
+		print '$.post("'.DOL_URL_ROOT .'/takepos/ajax/ajax.php?action=lockTerminal&term='.$_SESSION["takeposterminal"].'");';
+	}
+	?>
 
+	PrintCategories(0);
+	LoadProducts(0);
+	Refresh();
+
+	<?php
 	if (getDolGlobalString('TAKEPOS_CONTROL_CASH_OPENING')) {
 		$sql = "SELECT rowid, status FROM ".MAIN_DB_PREFIX."pos_cash_fence WHERE";
 		$sql .= " entity = ".((int) $conf->entity)." AND ";
@@ -1010,6 +1038,7 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 		<div class="topnav">
 			<div class="topnav-left">
 			<div class="inline-block valignmiddle">
+			<a href="#" onclick="closeTerminal();" title="<?php echo $langs->trans("CloseTerminal"); ?>" style="font-weight: bolder; font-size: 1.5em; margin: auto 0;">X</a>
 			<a class="topnav-terminalhour" <?php echo $nb_auth_terms > 1 ? "onclick=\"ModalBox('ModalTerminal');\"" : ""; ?>>
 			<span class="fa fa-cash-register"></span>
 			<span class="hideonsmartphone">
@@ -1072,7 +1101,12 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 		<?php
 		for ($i = 1; $i <= $conf->global->TAKEPOS_NUM_TERMINALS; $i++) {
 			if ($user->rights->takepos->{'access_takepos_' . $i}) {
-				print '<button type="button" class="block" onclick="location.href=\'index.php?setterminal='.$i.'\'">'.(! empty($conf->global->{"TAKEPOS_TERMINAL_NAME_".$i}) ? $conf->global->{"TAKEPOS_TERMINAL_NAME_".$i} : $langs->trans("TerminalName", $i)).'</button>';
+				$terminal_name = (! empty($conf->global->{"TAKEPOS_TERMINAL_NAME_".$i}) ? $conf->global->{"TAKEPOS_TERMINAL_NAME_".$i} : $langs->trans("TerminalName", $i));
+				if ($conf->global->{'TAKEPOS_LOCK_TERMINAL_' . $i} &&  ! empty($conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $i}) && $conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $i} != $user->login) {
+					print '<button type="button" class="block">' . $langs->trans("TerminalLocked", $terminal_name, $conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $i})  . '</button>';
+				} else {
+					print '<button type="button" class="block" onclick="location.href=\'index.php?setterminal='.$i.'\'">'. $terminal_name .'</button>';
+				}
 			}
 		}
 		?>

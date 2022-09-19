@@ -1,3 +1,4 @@
 LineDiscount=Remise ligne
 InvoiceDiscount=Remise globale
 TakePOSContactContact=Contact
+TerminalLocked=%s déjà utilisé par %s

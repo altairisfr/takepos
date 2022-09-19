@@ -1,3 +1,4 @@
 LineDiscount=Line discount
 InvoiceDiscount=Invoice discount
 TakePOSContact=Contact
+TerminalLocked=%s used by %s
