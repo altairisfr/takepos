@@ -90,6 +90,22 @@ if ($action == 'set') {
 	}
 
 	if (!$error) {
+		// add permissions
+		require_once DOL_DOCUMENT_ROOT . '/core/modules/modTakePos.class.php';
+		$module = new modTakePos($db);
+		$module->delete_permissions();
+		$r = 10000;
+		$numterminals = max(1, $conf->global->TAKEPOS_NUM_TERMINALS);
+		for ($i = 1; $i <= $numterminals; $i++) {
+			$r++;
+			$module->rights[$r][0] = 50153 + $i;
+			$module->rights[$r][1] = 'Allow access to ' . (! empty($conf->global->{"TAKEPOS_TERMINAL_NAME_".$i}) ? $conf->global->{"TAKEPOS_TERMINAL_NAME_".$i} : $langs->trans("TerminalName", $i));;
+			$module->rights[$r][2] = 'a';
+			$module->rights[$r][3] = 0;
+			$module->rights[$r][4] = 'access_takepos_' . $i;
+		}
+		$module->insert_permissions();
+
 		$db->commit();
 	} else {
 		$db->rollback();

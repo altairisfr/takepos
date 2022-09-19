@@ -959,9 +959,23 @@ $( document ).ready(function() {
 	LoadProducts(0);
 	Refresh();
 	<?php
-	//IF NO TERMINAL SELECTED
-	if ($_SESSION["takeposterminal"] == "") {
-		print "ModalBox('ModalTerminal');";
+		//IF NO TERMINAL SELECTED
+		if ($_SESSION["takeposterminal"] == "") {
+		$nb_auth_terms = 0;
+		$numterminals = max(1, $conf->global->TAKEPOS_NUM_TERMINALS);
+		for ($i = 1; $i <= $numterminals; $i++) {
+			if ($user->rights->takepos->{'access_takepos_' . $i}) {
+				$curterm = $i;
+				$nb_auth_terms++;
+			}
+		}
+		if (empty($nb_auth_terms)) {
+			accessforbidden();
+		} else if ($nb_auth_terms > 1) {
+			print "ModalBox('ModalTerminal');";
+		} else {
+			$_SESSION["takeposterminal"] = $curterm;
+		}
 		print "Contact('Choose Thirdparty');";
 	}
 
@@ -996,7 +1010,7 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 		<div class="topnav">
 			<div class="topnav-left">
 			<div class="inline-block valignmiddle">
-			<a class="topnav-terminalhour" <?php echo empty($conf->global->TAKEPOS_FIX_TERMINAL) ? "onclick=\"ModalBox('ModalTerminal');\"" : ""; ?>>
+			<a class="topnav-terminalhour" <?php echo $nb_auth_terms > 1 ? "onclick=\"ModalBox('ModalTerminal');\"" : ""; ?>>
 			<span class="fa fa-cash-register"></span>
 			<span class="hideonsmartphone">
 			<?php echo (! empty($conf->global->{"TAKEPOS_TERMINAL_NAME_".$_SESSION["takeposterminal"]}) ? $conf->global->{"TAKEPOS_TERMINAL_NAME_".$_SESSION["takeposterminal"]} : $langs->trans("TerminalName", $_SESSION["takeposterminal"])); ?>
@@ -1055,10 +1069,11 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 		<h3><?php print $langs->trans("TerminalSelect"); ?></h3>
 	</div>
 	<div class="modal-body">
-		<button type="button" class="block" onclick="location.href='index.php?setterminal=1'"><?php print (! empty($conf->global->TAKEPOS_TERMINAL_NAME_1) ? $conf->global->TAKEPOS_TERMINAL_NAME_1 : $langs->trans("TerminalName", 1)); ?></button>
 		<?php
-		for ($i = 2; $i <= $conf->global->TAKEPOS_NUM_TERMINALS; $i++) {
-			print '<button type="button" class="block" onclick="location.href=\'index.php?setterminal='.$i.'\'">'.(! empty($conf->global->{"TAKEPOS_TERMINAL_NAME_".$i}) ? $conf->global->{"TAKEPOS_TERMINAL_NAME_".$i} : $langs->trans("TerminalName", $i)).'</button>';
+		for ($i = 1; $i <= $conf->global->TAKEPOS_NUM_TERMINALS; $i++) {
+			if ($user->rights->takepos->{'access_takepos_' . $i}) {
+				print '<button type="button" class="block" onclick="location.href=\'index.php?setterminal='.$i.'\'">'.(! empty($conf->global->{"TAKEPOS_TERMINAL_NAME_".$i}) ? $conf->global->{"TAKEPOS_TERMINAL_NAME_".$i} : $langs->trans("TerminalName", $i)).'</button>';
+			}
 		}
 		?>
 	</div>
