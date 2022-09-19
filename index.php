@@ -959,8 +959,8 @@ $( document ).ready(function() {
 	LoadProducts(0);
 	Refresh();
 	<?php
-		//IF NO TERMINAL SELECTED
-		if ($_SESSION["takeposterminal"] == "") {
+	// TERMINAL SELECTION IF NOT SET
+	if ($_SESSION["takeposterminal"] == "") {
 		$nb_auth_terms = 0;
 		$numterminals = max(1, $conf->global->TAKEPOS_NUM_TERMINALS);
 		for ($i = 1; $i <= $numterminals; $i++) {
