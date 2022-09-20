@@ -156,7 +156,7 @@ if ($action == 'getProducts') {
 		if ( ! empty($conf->global->{'CASHDESK_ID_WAREHOUSE'.$_SESSION['takeposterminal']})) {
 			$sql .= ', ps.reel';
 		} else {
-			$sql .= ', SUM(ps.reel)';
+			$sql .= ', SUM(ps.reel) as reel';
 		}
 	}
 	// Add fields from hooks
@@ -183,7 +183,7 @@ if ($action == 'getProducts') {
 		$sql .= ' AND EXISTS (SELECT cp.fk_product FROM '.MAIN_DB_PREFIX.'categorie_product as cp WHERE cp.fk_product = p.rowid AND cp.fk_categorie IN ('.$db->sanitize($filteroncategids).'))';
 	}
 	$sql .= ' AND p.tosell = 1';
-	if ($conf->global->TAKEPOS_PRODUCT_IN_STOCK == 1) {
+	if ($conf->global->TAKEPOS_PRODUCT_IN_STOCK == 1 && ! empty($conf->global->{'CASHDESK_ID_WAREHOUSE'.$_SESSION['takeposterminal']})) {
 		$sql .= ' AND ps.reel > 0';
 	}
 	$sql .= natural_search(array('p.ref', 'p.label', 'p.barcode'), $term);
@@ -194,7 +194,7 @@ if ($action == 'getProducts') {
 	$sql.=$hookmanager->resPrint;
 
 	if ($conf->global->TAKEPOS_PRODUCT_IN_STOCK == 1 && empty($conf->global->{'CASHDESK_ID_WAREHOUSE'.$_SESSION['takeposterminal']})) {
-		$sql .= ' GROUP BY p.rowid';
+		$sql .= ' GROUP BY p.rowid HAVING SUM(ps.reel) > 0';
 	}
 
 	// load only one page of products
