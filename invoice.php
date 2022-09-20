@@ -910,7 +910,9 @@ if (empty($reshook)) {
 			}
 		}
 		$sectionwithinvoicelink .= '</span><br>';
-		if (getDolGlobalString('TAKEPOS_PRINT_METHOD') == "takeposconnector") {
+		if (getDolGlobalString('TAKEPOS_PRINT_INVOICE')) {
+			$sectionwithinvoicelink .= ' <a class="button" href="' . DOL_URL_ROOT . '/document.php?modulepart=facture&file=' . $invoice->ref . '/' . $invoice->ref . '.pdf">Invoice</a>';
+		} elseif (getDolGlobalString('TAKEPOS_PRINT_METHOD') == "takeposconnector") {
 			if (getDolGlobalString('TAKEPOS_PRINT_SERVER') && filter_var($conf->global->TAKEPOS_PRINT_SERVER, FILTER_VALIDATE_URL) == true) {
 				$sectionwithinvoicelink .= ' <button id="buttonprint" type="button" onclick="TakeposConnector('.$placeid.');">'.$langs->trans('PrintTicket').'</button>';
 			} else {
@@ -1252,11 +1254,7 @@ print '<!-- invoice.php place='.(int) $place.' invoice='.$invoice->ref.' mobilep
 print '<div class="div-table-responsive-no-min invoice">';
 print '<table id="tablelines" class="noborder noshadow postablelines" width="100%">';
 if ($sectionwithinvoicelink && ($mobilepage == "invoice" || $mobilepage == "")) {
-	if (!empty($conf->global->TAKEPOS_SHOW_HT)) {
-		print '<tr><td colspan="5">'.$sectionwithinvoicelink.'</td></tr>';
-	} else {
-		print '<tr><td colspan="4">'.$sectionwithinvoicelink.'</td></tr>';
-	}
+	print '<tr><td colspan="99">'.$sectionwithinvoicelink.'</td></tr>';
 }
 print '<tr class="liste_titre nodrag nodrop">';
 print '<td class="linecoldescription">';
@@ -1628,6 +1626,10 @@ print '</table>';
 
 if (($action == "valid" || $action == "history") && $invoice->type != Facture::TYPE_CREDIT_NOTE) {
 	print '<button id="buttonprint" type="button" onclick="ModalBox(\'ModalCreditNote\')">'.$langs->trans('CreateCreditNote').'</button>';
+	if (getDolGlobalString('TAKEPOS_PRINT_INVOICE')) {
+		print ' <a class="button" href="' . DOL_URL_ROOT . '/document.php?modulepart=facture&file=' . $invoice->ref . '/' . $invoice->ref . '.pdf">Invoice</a>';
+	}
+
 }
 
 
