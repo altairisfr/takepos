@@ -1124,7 +1124,7 @@ $( document ).ready(function() {
 			if ($contactid > 0) {
 				$contact = new Contact($db);
 				$contact->fetch($contactid);
-				$s .= "-" . $contact->getFullName($langs);
+				$s .= " - " . $contact->getFullName($langs);
 			}
 		}
 	}
