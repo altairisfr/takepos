@@ -1115,18 +1115,17 @@ $( document ).ready(function() {
 	console.log("Set customer info and sales in header placeid=<?php echo $placeid; ?> status=<?php echo $invoice->statut; ?>");
 
 	<?php
-	$s = getDolGlobalString('TAKEPOS_CHOOSE_CONTACT') ? '' : $langs->trans("Customer");
+	$s = getDolGlobalString('TAKEPOS_CHOOSE_THIRDPARTY') ? '' : $langs->trans("Choose Customer");
 	if ($invoice->id > 0 && ($invoice->socid != $conf->global->$constforcompanyid)) {
 		$s = $soc->name;
-	}
-	if (getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) {
-		$c = $langs->trans("TakePOSContact");
-		$contactids = $invoice->getIdContact('external', 'BILLING');
-		$contactid = $contactids[0];
-		if ($contactid > 0) {
-			$contact = new Contact($db);
-			$contact->fetch($contactid);
-			$c = $contact->getFullName($langs);
+		if (getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) {
+			$contactids = $invoice->getIdContact('external', 'BILLING');
+			$contactid = $contactids[0];
+			if ($contactid > 0) {
+				$contact = new Contact($db);
+				$contact->fetch($contactid);
+				$s .= "-" . $contact->getFullName($langs);
+			}
 		}
 	}
 	?>
@@ -1135,10 +1134,8 @@ $( document ).ready(function() {
 
 	<?php if ( ! getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) { ?>
 		$("#customerandsales").append('<a class="valignmiddle tdoverflowmax300 minwidth100" style="font-size: 1em; font-weight: bolder;" id="customer" onclick="Customer();" title="<?php print dol_escape_js($s); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s); ?></a>');
-	<?php } ?>
-
-	<?php if (getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) { ?>
-		$("#customerandsales").append('<a class="valignmiddle tdoverflowmax500 minwidth100" style="font-size: 1.5em; font-weight: bolder;" id="contact" onclick="Contact(\'<?php print dol_escape_js("Choose thirdparty"); ?>\');" title="<?php print dol_escape_js(empty($s) ? $c : $s." - ".$c); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js(empty($s) ? $c : $s." - ".$c); ?></a>');
+	<?php } else { ?>
+		$("#customerandsales").append('<a class="valignmiddle tdoverflowmax500 minwidth100" style="font-size: 1.5em; font-weight: bolder;" id="contact" onclick="Contact();" title="<?php print dol_escape_js($s); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s); ?></a>');
 	<?php } ?>
 
 	<?php

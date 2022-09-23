@@ -200,8 +200,8 @@ if(localStorage.hasKeyboard) {
 }
 */
 
-function closeTerminal() {
-	$.post("<?php echo DOL_URL_ROOT ?>/takepos/ajax/ajax.php?action=closeTerminal", function(data) { ModalBox('ModalTerminal'); });
+function closeTerminal(modal) {
+	$.post("<?php echo DOL_URL_ROOT ?>/takepos/ajax/ajax.php?action=closeTerminal", function(data) { if (modal) ModalBox('ModalTerminal'); });
 }
 
 function ClearSearch(clearSearchResults) {
@@ -500,14 +500,14 @@ function deleteline() {
 	ClearSearch();
 }
 
-function Customer() {
+function Customer(numterm) {
 	console.log("Open box to select the thirdparty place="+place);
-	$.colorbox({href:"../societe/list.php?type=t&contextpage=poslist&nomassaction=1&place="+place, width:"90%", height:"80%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("Customer"); ?>"});
+	$.colorbox({href:"../societe/list.php?type=t&contextpage=poslist&nomassaction=1&place="+place, width:"90%", height:"80%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("Customer"); ?>", onClosed : function() { if (numterm) $.post("<?php echo DOL_URL_ROOT ; ?>/takepos/ajax/ajax.php?action=lockTerminal&term=" + numterm);}});
 }
 
-function Contact(soc) {
+function Contact(numterm) {
 	console.log("Open box to select the contact place="+place);
-	$.colorbox({href:"../contact/list.php?type=c&contextpage=poslist&nomassaction=1&search_societe="+soc+"&place="+place, width:"90%", height:"80%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("TakePOSContact"); ?>"});
+	$.colorbox({href:"../contact/list.php?type=c&contextpage=poslist&nomassaction=1&place="+place, width:"90%", height:"80%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("TakePOSContact"); ?>", onClosed : function() { if (numterm) $.post("<?php echo DOL_URL_ROOT ; ?>/takepos/ajax/ajax.php?action=lockTerminal&term=" + numterm);}});
 }
 
 function History()
@@ -572,6 +572,11 @@ function New() {
 				//$('#poslines').scrollTop($('#poslines')[0].scrollHeight);
 			});
 			ClearSearch();
+			<?php if ( ! getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) { ?>
+				Customer();
+			<?php } else { ?>
+				Contact();
+			<?php } ?>
 		}
 	});
 }
@@ -982,10 +987,10 @@ $( document ).ready(function() {
 				unset($_SESSION["takeposterminal"]);
 				print 'window.location = "'.DOL_URL_ROOT.'/index.php";';
 			} elseif ($conf->global->{'TAKEPOS_LOCK_TERMINAL_' . $curterm}) {
-				print '$.post("'.DOL_URL_ROOT . '/takepos/ajax/ajax.php?action=lockTerminal&term='.$curterm.'");';
+				if ( ! getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) print "Customer(".$curterm.");";
+				else print "Contact(".$curterm.");";
 			}
 		}
-		print "Contact('Choose Thirdparty');";
 	}
 	elseif ($conf->global->{'TAKEPOS_LOCK_TERMINAL_' . $_SESSION["takeposterminal"]} &&  ! empty($conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $_SESSION["takeposterminal"]}) && $conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $_SESSION["takeposterminal"]} != $user->login) {
 			$terminal_name = (! empty($conf->global->{"TAKEPOS_TERMINAL_NAME_".$_SESSION["takeposterminal"]}) ? $conf->global->{"TAKEPOS_TERMINAL_NAME_".$_SESSION["takeposterminal"]} : $langs->transnoentities("TerminalName", $_SESSION["takeposterminal"]));
@@ -998,7 +1003,12 @@ $( document ).ready(function() {
 			}
 	}
 	elseif ($conf->global->{'TAKEPOS_LOCK_TERMINAL_' . $_SESSION["takeposterminal"]}) {
-		print '$.post("'.DOL_URL_ROOT .'/takepos/ajax/ajax.php?action=lockTerminal&term='.$_SESSION["takeposterminal"].'");';
+		if (!is_object($invoice)) {
+			if ( ! getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) print "Customer(".$_SESSION["takeposterminal"].");";
+			else print "Contact(".$_SESSION["takeposterminal"].");";
+		} else { // is it useful ?
+			print '$.post("'.DOL_URL_ROOT .'/takepos/ajax/ajax.php?action=lockTerminal&term='.$_SESSION["takeposterminal"].'");';
+		}
 	}
 	?>
 
@@ -1025,7 +1035,7 @@ $( document ).ready(function() {
 });
 </script>
 
-<body class="bodytakepos" style="overflow: hidden;">
+<body class="bodytakepos" style="overflow: hidden;" onbeforeunload="return ;">
 <?php
 $keyCodeForEnter = getDolGlobalInt('CASHDESK_READER_KEYCODE_FOR_ENTER'.$_SESSION['takeposterminal']) > 0 ? getDolGlobalInt('CASHDESK_READER_KEYCODE_FOR_ENTER'.$_SESSION['takeposterminal']) : '';
 ?>
@@ -1038,7 +1048,7 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 		<div class="topnav">
 			<div class="topnav-left">
 			<div class="inline-block valignmiddle">
-			<a href="#" onclick="closeTerminal();" title="<?php echo $langs->trans("CloseTerminal"); ?>" style="font-weight: bolder; font-size: 1.5em; margin: auto 0;">X</a>
+			<a href="#" onclick="closeTerminal(true);" title="<?php echo $langs->trans("CloseTerminal"); ?>" style="font-weight: bolder; font-size: 1.5em; margin: auto 0;">X</a>
 			<a class="topnav-terminalhour" <?php echo $nb_auth_terms > 1 ? "onclick=\"ModalBox('ModalTerminal');\"" : ""; ?>>
 			<span class="fa fa-cash-register"></span>
 			<span class="hideonsmartphone">
@@ -1105,7 +1115,7 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 				if ($conf->global->{'TAKEPOS_LOCK_TERMINAL_' . $i} &&  ! empty($conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $i}) && $conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $i} != $user->login) {
 					print '<button type="button" class="block">' . $langs->trans("TerminalLocked", $terminal_name, $conf->global->{'TAKEPOS_TERMINAL_LOCKED_' . $i})  . '</button>';
 				} else {
-					print '<button type="button" class="block" onclick="closeTerminal();location.href=\'index.php?setterminal='.$i.'\'">'. $terminal_name .'</button>';
+					print '<button type="button" class="block" onclick="closeTerminal(true);location.href=\'index.php?setterminal='.$i.'\'">'. $terminal_name .'</button>';
 				}
 			}
 		}
@@ -1249,9 +1259,10 @@ if (empty($conf->global->TAKEPOS_BAR_RESTAURANT)) {
 }
 
 if (!empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
-	$menus[$r++] = array('title'=>'<span class="far fa-building paddingrightonly"></span><div class="trunc">'.$langs->trans("Customer").'</div>', 'action'=>'Customer();');
 	if (getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) {
 		$menus[$r++] = array('title'=>'<span class="far fa-building paddingrightonly"></span><div class="trunc">'.$langs->trans("TakePOSContact").'</div>', 'action'=>'Contact();');
+	} else {
+		$menus[$r++] = array('title'=>'<span class="far fa-building paddingrightonly"></span><div class="trunc">'.$langs->trans("Customer").'</div>', 'action'=>'Customer();');
 	}
 }
 if ( ! getDolGlobalString('TAKEPOS_HIDE_HISTORY')) {
@@ -1474,6 +1485,13 @@ if (!empty($conf->global->TAKEPOS_WEIGHING_SCALE)) {
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+// close terminal
+$(window).on("beforeunload", function() {
+    closeTerminal(false);
+    return "ok";
+});
+</script>
 </body>
 <?php
 
