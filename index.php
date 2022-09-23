@@ -973,7 +973,6 @@ $( document ).ready(function() {
 			$nb_auth_terms++;
 		}
 	}
-
 	// TERMINAL SELECTION IF NOT SET
 	if ($_SESSION["takeposterminal"] == "") {
 		if (empty($nb_auth_terms)) {
