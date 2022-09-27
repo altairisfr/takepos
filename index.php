@@ -1269,7 +1269,7 @@ if ( ! getDolGlobalString('TAKEPOS_HIDE_HISTORY')) {
 }
 $menus[$r++] = array('title'=>'<span class="fa fa-cube paddingrightonly"></span><div class="trunc">'.$langs->trans("FreeZone").'</div>', 'action'=>'FreeZone();');
 $menus[$r++] = array('title'=>'<span class="fa fa-percent paddingrightonly"></span><div class="trunc">'.$langs->trans("InvoiceDiscount").'</div>', 'action'=>'Reduction();');
-$menus[$r++] = array('title'=>'<span class="far fa-money-bill-alt paddingrightonly"></span><div class="trunc">'.$langs->trans("Payment").'</div>', 'action'=>'CloseBill();');
+$menus[$r++] = array('title'=>'<span class="far fa-money-bill-alt paddingrightonly"></span><div class="trunc">'.$langs->trans("Payment").'</div>', 'action'=>$conf->global->TAKEPOS_NO_GENERIC_THIRDPARTY ? 'Contact();' : 'CloseBill();', 'name' => 'CloseBill');
 
 if (getDolGlobalString('TAKEPOS_DIRECT_PAYMENT')) {
 	$menus[$r++] = array('title'=>'<span class="far fa-money-bill-alt paddingrightonly"></span><div class="trunc">'.$langs->trans("DirectPayment").' <span class="opacitymedium">('.$langs->trans("Cash").')</span></div>', 'action'=>'DirectPayment();');
@@ -1365,7 +1365,7 @@ if (!empty($conf->global->TAKEPOS_WEIGHING_SCALE)) {
 			} elseif ($i > 12) {
 				echo '<button style="display: none;" type="button" id="action'.$i.'" class="actionbutton" onclick="'.(empty($menu['action']) ? '' : $menu['action']).'">'.$menu['title'].'</button>';
 			} else {
-				echo '<button style="'.(empty($menu['style']) ? '' : $menu['style']).'" type="button" id="action'.$i.'" class="actionbutton" onclick="'.(empty($menu['action']) ? '' : $menu['action']).'">'.$menu['title'].'</button>';
+				echo '<button style="'.(empty($menu['style']) ? '' : $menu['style']).'" type="button" id="action'.$i.'" class="actionbutton" onclick="'.(empty($menu['action']) ? '' : $menu['action']).'" name="'.$menu['name'].'">'.$menu['title'].'</button>';
 			}
 		}
 

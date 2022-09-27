@@ -487,7 +487,7 @@ if (empty($reshook)) {
 		$invoice->pos_source = $_SESSION["takeposterminal"];
 		$invoice->entity = !empty($_SESSION["takeposinvoiceentity"]) ? $_SESSION["takeposinvoiceentity"] : $conf->entity;
 
-		if ($invoice->socid <= 0) {
+		if ($invoice->socid <= 0 && empty($conf->global->TAKEPOS_NO_GENERIC_THIRDPARTY)) {
 			$langs->load('errors');
 			dol_htmloutput_errors($langs->trans("ErrorModuleSetupNotComplete", "TakePos"), null, 1);
 		} else {
