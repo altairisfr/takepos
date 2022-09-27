@@ -539,9 +539,18 @@ if (empty($reshook)) {
 		}
 
 		$idoflineadded = 0;
+		$err = 0;
 		if (!empty($conf->global->TAKEPOS_GROUP_SAME_PRODUCT)) {
 			foreach ($invoice->lines as $line) {
 				if ($line->product_ref == $prod->ref) {
+					// check if qty in stock
+					if ($conf->global->TAKEPOS_QTY_IN_STOCK && $line->qty + $qty > $prod->stock) {
+						$object->error = $langs->trans('NotEnoughInStock');
+						dol_htmloutput_errors($object->error, $object->errors, 1);
+						$err++;
+						break;
+					}
+
 					$result = $invoice->updateline($line->id, $line->desc, $line->subprice, $line->qty + $qty, $line->remise_percent, $line->date_start, $line->date_end, $line->tva_tx, $line->localtax1_tx, $line->localtax2_tx, 'HT', $line->info_bits, $line->product_type, $line->fk_parent_line, 0, $line->fk_fournprice, $line->pa_ht, $line->label, $line->special_code, $line->array_options, $line->situation_percent, $line->fk_unit);
 					if ($result < 0) {
 						dol_htmloutput_errors($invoice->error, $invoice->errors, 1);
@@ -552,7 +561,7 @@ if (empty($reshook)) {
 				}
 			}
 		}
-		if ($idoflineadded <= 0) {
+		if ($idoflineadded <= 0 && empty($err)) {
 			$invoice->fetch_thirdparty();
 			$array_options = array();
 
@@ -593,7 +602,16 @@ if (empty($reshook)) {
 				$line = $hookmanager->resArray;
 			}
 
-			$idoflineadded = $invoice->addline($line['description'], $line['price'], $qty, $line['tva_tx'], $line['localtax1_tx'], $line['localtax2_tx'], $idproduct, $line['remise_percent'], '', 0, 0, 0, '', $price_base_type, $line['price_ttc'], $prod->type, -1, 0, '', 0, (!empty($parent_line)) ? $parent_line : '', $line['fk_fournprice'], $line['pa_ht'], '', $line['array_options'], 100, '', null, 0);
+			// check if qty in stock
+			if ($conf->global->TAKEPOS_QTY_IN_STOCK && $qty > $prod->stock) {
+				$object->error = $langs->trans('NotEnoughInStock');
+				dol_htmloutput_errors($object->error, $object->errors, 1);
+				$err++;
+			}
+
+			if (empty($err)) {
+				$idoflineadded = $invoice->addline($line['description'], $line['price'], $qty, $line['tva_tx'], $line['localtax1_tx'], $line['localtax2_tx'], $idproduct, $line['remise_percent'], '', 0, 0, 0, '', $price_base_type, $line['price_ttc'], $prod->type, -1, 0, '', 0, (!empty($parent_line)) ? $parent_line : '', $line['fk_fournprice'], $line['pa_ht'], '', $line['array_options'], 100, '', null, 0);
+			}
 		}
 
 		$invoice->fetch($placeid);
