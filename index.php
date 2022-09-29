@@ -524,6 +524,16 @@ function Reduction() {
 
 function CloseBill() {
 	invoiceid = $("#invoiceid").val();
+	<?php if ($conf->global->TAKEPOS_NO_GENERIC_THIRDPARTY) { ?>
+		if ($("#idcustomer").val() == "") {
+			<?php if ($conf->global->TAKEPOS_CHOOSE_CONTACT) { ?>
+				Contact();
+			<?php } else { ?>
+				Customer();
+			<?php } ?>
+			return;
+		}
+	<?php } ?>
 	console.log("Open popup to enter payment on invoiceid="+invoiceid);
 	$.colorbox({href:"pay.php?place="+place+"&invoiceid="+invoiceid, width:"80%", height:"90%", transition:"none", iframe:"true", title:""});
 }
@@ -572,6 +582,7 @@ function New() {
 				//$('#poslines').scrollTop($('#poslines')[0].scrollHeight);
 			});
 			ClearSearch();
+			$("#idcustomer").val("");
 			<?php if ( ! getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) { ?>
 				Customer();
 			<?php } else { ?>
@@ -1068,6 +1079,7 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 			<!-- section for customer and open sales -->
 			<div class="inline-block valignmiddle" id="customerandsales">
 			</div>
+			<input type="hidden" id="idcustomer" value="">
 			<!-- More info about customer -->
 			<div class="inline-block valignmiddle tdoverflowmax150onsmartphone" id="moreinfo"></div>
 			<div class="inline-block valignmiddle tdoverflowmax150onsmartphone" id="infowarehouse"></div>
