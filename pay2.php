@@ -337,7 +337,10 @@ print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad 
 print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '\'000\'' : '0.02').');">'.($numpad == 0 ? '000' : '0.02').'</button>';
 print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '\'.\'' : '0.05').');">'.($numpad == 0 ? '.' : '0.05').'</button>';
 
-print '<br/>';
+
+if ($conf->global->TAKEPOS_DELAYED_PAYMENT) {
+	print '<button type="button" class="calcbutton2" onclick="Validate(\'delayed\');">'.$langs->trans("Reported").'</button>';
+}
 
 // Payment Modes
 
@@ -373,10 +376,6 @@ if ($conf->global->TAKEPOS_ENABLE_SUMUP) {
 		$langs->loadLangs(array("errors", "admin"));
 		print '<button type="button" class="calcbutton2 disabled" title="'.$langs->trans("SetupNotComplete").'">Sumup</button>';
 	}
-}
-
-if ($conf->global->TAKEPOS_DELAYED_PAYMENT) {
-	print '<button type="button" class="calcbutton2" onclick="Validate(\'delayed\');">'.$langs->trans("Reported").'</button>';
 }
 
 // Add code from hooks
