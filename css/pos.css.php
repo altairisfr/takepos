@@ -101,7 +101,7 @@ button.calcbutton2.poscolordelete {
 	color: #fff;*/
 }
 
-button.poscolorvalid, button.poscolorvalid {
+button.calcbutton2.poscolorvalid, button.calcbutton2.poscolorvalid {
 	background-color: green;
 	color: #fff;
 }
