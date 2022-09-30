@@ -2,3 +2,4 @@ LineDiscount=Line discount
 InvoiceDiscount=Invoice discount
 TakePOSContact=Contact
 TerminalLocked=%s used by %s
+ConfirmClose=Are you sure you want to delete this payment ?

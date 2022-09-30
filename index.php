@@ -532,10 +532,16 @@ function CloseBill() {
 			<?php } ?>
 			return;
 		}
-	<?php } ?>
+	<?php }
+	if ($conf->global->TAKEPOS_USE_NEW_PAYMENT_SCREEN) {
+		$payurl = "pay2.php";
+	} else {
+		$payurl = "pay.php";
+	}
+	?>
 	invoiceid = $("#invoiceid").val();
 	console.log("Open popup to enter payment on invoiceid="+invoiceid);
-	$.colorbox({href:"pay.php?place="+place+"&invoiceid="+invoiceid, width:"80%", height:"90%", transition:"none", iframe:"true", title:""});
+	$.colorbox({href:"<?echo $payurl; ?>?place="+place+"&invoiceid="+invoiceid, width:"80%", height:"90%", transition:"none", iframe:"true", title:""});
 }
 
 function Floors() {
