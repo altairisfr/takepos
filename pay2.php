@@ -144,6 +144,7 @@ if ($conf->global->TAKEPOS_NUMPAD == 0) {
 
 ?>
 	var alreadypayed = <?php echo $alreadypayed ?>;
+	var remaintopay = <?php echo $remaintopay ?>;
 
 	function addreceived(price)
 	{
@@ -206,9 +207,16 @@ if ($conf->global->TAKEPOS_NUMPAD == 0) {
 	var payments = [];
 
 	function addPayment(paymentMode) {
-		payments.push({'mode': paymentMode, 'amount': $("#change1").val()});
-		$("div.paymentlist").append("<div>" + paymentMode + " : " + $("#change1").val());
-		$("#change1").val("");
+		if (received == "" || received == 0) return;
+		payments.push({'mode': paymentMode, 'amount': received});
+		if (payments.length > 1) $("div.takepospay").append(" -");
+		$("div.takepospay").append(" " + paymentMode + " : " + received);
+		alreadypayed += price2numjs(received, 'MT');
+		remaintopay -= price2numjs(received, 'MT');
+		$("#remaintopaydisplay").html(remaintopay + " <?php echo $conf->currency; ?>");
+		$("#alreadypayeddisplay").html(alreadypayed + " <?php echo $conf->currency; ?>");
+		$(".change1").html(price2numjs(0, 'MT'));
+		received="";
 	}
 
 	function Validate(payment)
@@ -271,13 +279,17 @@ if ($conf->global->TAKEPOS_NUMPAD == 0) {
 	<div class="paymentbordline paymentbordlinetotal center">
 		<span class="takepospay colorwhite"><?php echo $langs->trans('TotalTTC'); ?>: <span id="totaldisplay" class="colorwhite"><?php echo price($invoice->total_ttc, 1, '', 1, -1, -1, $invoice->multicurrency_code); ?></span></span>
 	</div>
-	<?php if ($remaintopay != $invoice->total_ttc) { ?>
-		<div class="paymentbordline paymentbordlineremain center">
-			<span class="takepospay colorwhite"><?php echo $langs->trans('RemainToPay'); ?>: <span id="remaintopaydisplay" class="colorwhite"><?php echo price($remaintopay, 1, '', 1, -1, -1, $invoice->multicurrency_code); ?></span></span>
-		</div>
-	<?php } ?>
+	<div class="paymentbordline paymentbordlinepayed center">
+		<span class="takepospay colorwhite"><?php echo $langs->trans('AlreadyPayed'); ?>: <span id="alreadypayeddisplay" class="colorwhite"><?php echo price($alreadypayed, 1, '', 1, -1, -1, $invoice->multicurrency_code); ?></span></span>
+	</div>
+	<div class="paymentbordline paymentbordlineremain center">
+		<span class="takepospay colorwhite"><?php echo $langs->trans('RemainToPay'); ?>: <span id="remaintopaydisplay" class="colorwhite"><?php echo price($remaintopay, 1, '', 1, -1, -1, $invoice->multicurrency_code); ?></span></span>
+	</div>
 	<div class="paymentbordline paymentbordlinereceived center">
 		<span class="takepospay colorwhite"><?php echo $langs->trans("Received"); ?>: <span class="change1 colorred"><?php echo price(0, 1, '', 1, -1, -1, $invoice->multicurrency_code); ?></span><input type="hidden" id="change1" class="change1" value="0"></span>
+	</div>
+	<div class="paymentbordline paymentlist center">
+		<div class="takepospay colorwhite"><?php echo $langs->trans("PaymentList"); ?></div>
 	</div>
 	<div class="paymentbordline paymentbordlinechange center">
 		<span class="takepospay colorwhite"><?php echo $langs->trans("Change"); ?>: <span class="change2 colorwhite"><?php echo price(0, 1, '', 1, -1, -1, $invoice->multicurrency_code); ?></span><input type="hidden" id="change2" class="change2" value="0"></span>
@@ -294,8 +306,6 @@ if ($conf->global->TAKEPOS_NUMPAD == 0) {
 		print '</div>';
 	}
 	?>
-	<div class="paymentbordline paymentlist center">
-	</div>
 </div>
 
 <div style="position:absolute; left:5%; height:52%; width:90%;">
