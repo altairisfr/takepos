@@ -523,7 +523,6 @@ function Reduction() {
 }
 
 function CloseBill() {
-	invoiceid = $("#invoiceid").val();
 	<?php if ($conf->global->TAKEPOS_NO_GENERIC_THIRDPARTY) { ?>
 		if ($("#idcustomer").val() == "") {
 			<?php if ($conf->global->TAKEPOS_CHOOSE_CONTACT) { ?>
@@ -534,6 +533,7 @@ function CloseBill() {
 			return;
 		}
 	<?php } ?>
+	invoiceid = $("#invoiceid").val();
 	console.log("Open popup to enter payment on invoiceid="+invoiceid);
 	$.colorbox({href:"pay.php?place="+place+"&invoiceid="+invoiceid, width:"80%", height:"90%", transition:"none", iframe:"true", title:""});
 }
