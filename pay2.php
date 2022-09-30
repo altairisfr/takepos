@@ -340,7 +340,9 @@ print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad 
 print '<br/>';
 
 // Payment Modes
+
 if (count($arrayOfValidPaymentModes) > 0) {
+	$i = 0;
 	while ($i < count($arrayOfValidPaymentModes)) {
 		$paycode = $arrayOfValidPaymentModes[$i]->code;
 		$payIcon = '';
