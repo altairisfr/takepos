@@ -203,6 +203,14 @@ if ($conf->global->TAKEPOS_NUMPAD == 0) {
 		$('.change2').addClass('colorwhite');
 	}
 
+	var payments = [];
+
+	function addPayment(paymentMode) {
+		payments.push({'mode': paymentMode, 'amount': $("#change1").val()});
+		$("div.paymentlist").append("<div>" + paymentMode + " : " + $("#change1").val());
+		$("#change1").val("");
+	}
+
 	function Validate(payment)
 	{
 		var invoiceid = <?php echo ($invoiceid > 0 ? $invoiceid : 0); ?>;
@@ -286,6 +294,8 @@ if ($conf->global->TAKEPOS_NUMPAD == 0) {
 		print '</div>';
 	}
 	?>
+	<div class="paymentbordline paymentlist center">
+	</div>
 </div>
 
 <div style="position:absolute; left:5%; height:52%; width:90%;">
@@ -339,7 +349,7 @@ print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad 
 
 
 if ($conf->global->TAKEPOS_DELAYED_PAYMENT) {
-	print '<button type="button" class="calcbutton2" onclick="Validate(\'delayed\');">'.$langs->trans("Reported").'</button>';
+	print '<button type="button" class="calcbutton2" onclick="addPayment(\'delayed\');">'.$langs->trans("Reported").'</button>';
 }
 
 // Payment Modes
@@ -363,7 +373,7 @@ if (count($arrayOfValidPaymentModes) > 0) {
 			}
 		}
 
-		print '<button type="button" class="calcbutton2" onclick="Validate(\''.dol_escape_js($paycode).'\');">'.(!empty($payIcon) ? '<span class="fa fa-2x fa-'.$payIcon.' iconwithlabel"></span><br>'. $langs->trans("PaymentTypeShort".$arrayOfValidPaymentModes[$i]->code) : $langs->trans("PaymentTypeShort".$arrayOfValidPaymentModes[$i]->code)).'</button>';
+		print '<button type="button" class="calcbutton2" onclick="addPayment(\''.dol_escape_js($paycode).'\');">'.(!empty($payIcon) ? '<span class="fa fa-2x fa-'.$payIcon.' iconwithlabel"></span><br>'. $langs->trans("PaymentTypeShort".$arrayOfValidPaymentModes[$i]->code) : $langs->trans("PaymentTypeShort".$arrayOfValidPaymentModes[$i]->code)).'</button>';
 		$i = $i + 1;
 	}
 
