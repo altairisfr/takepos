@@ -210,58 +210,31 @@ if ($conf->global->TAKEPOS_NUMPAD == 0) {
 		if (received == "" || received == 0) return;
 		payments.push({'mode': paymentMode, 'amount': received});
 		if (payments.length > 1) $("div.takepospay").append(" -");
-		$("div.takepospay").append(" " + paymentMode + " : " + received);
+		$("div.takepospay").append(" " + paymentMode + " : " + price2numjs(received) + " <?php echo $conf->currency; ?>");
 		alreadypayed += price2numjs(received, 'MT');
 		remaintopay -= price2numjs(received, 'MT');
-		$("#remaintopaydisplay").html(remaintopay + " <?php echo $conf->currency; ?>");
+		$("#remaintopaydisplay").html(price2numjs(remaintopay) + " <?php echo $conf->currency; ?>");
 		$("#alreadypayeddisplay").html(alreadypayed + " <?php echo $conf->currency; ?>");
 		$(".change1").html(price2numjs(0, 'MT'));
 		received="";
 	}
 
-	function Validate(payment)
-	{
-		var invoiceid = <?php echo ($invoiceid > 0 ? $invoiceid : 0); ?>;
-		var accountid = $("#selectaccountid").val();
-		var amountpayed = $("#change1").val();
-		var excess = $("#change2").val();
-		if (amountpayed > <?php echo $invoice->total_ttc; ?>) {
-			amountpayed = <?php echo $invoice->total_ttc; ?>;
-		}
-		console.log("We click on the payment mode to pay amount = "+amountpayed);
-		parent.$("#poslines").load("invoice.php?place=<?php echo $place; ?>&action=valid&pay="+payment+"&amount="+amountpayed+"&excess="+excess+"&invoiceid="+invoiceid+"&accountid="+accountid, function() {
-			if (amountpayed > <?php echo $remaintopay; ?> || amountpayed == <?php echo $remaintopay; ?> || amountpayed==0 ) {
-				console.log("Close popup");
-				parent.$.colorbox.close();
-			}
-			else {
-				console.log("Amount is not comple, so we do NOT close popup and reload it.");
-				location.reload();
-			}
-		});
-	}
-
 	function ValidAll()
 	{
+		if (alreadypayed == "" || alreadypayed < <?php echo $invoice->total_ttc; ?>) {
+			alert("<?php echo $langs->trans('PaymentNotComplete'); ?>");
+			return false;
+		}
+
 		var invoiceid = <?php echo ($invoiceid > 0 ? $invoiceid : 0); ?>;
 		var accountid = $("#selectaccountid").val();
-		var amountpayed = $("#change1").val();
-		var excess = $("#change2").val();
-		if (amountpayed > <?php echo $invoice->total_ttc; ?>) {
-			amountpayed = <?php echo $invoice->total_ttc; ?>;
-		}
-		console.log("We click on the payment mode to pay amount = "+amountpayed);
+
 		for (i = 0; i < payments.length; i++) {
 			parent.$("#poslines").load("invoice.php?place=<?php echo $place; ?>&action=valid&pay="+payments[i].mode+"&amount="+payments[i].amount+"&invoiceid="+invoiceid+"&accountid="+accountid)
 		}
-		if (amountpayed > <?php echo $remaintopay; ?> || amountpayed == <?php echo $remaintopay; ?> || amountpayed==0 ) {
-			console.log("Close popup");
-			parent.$.colorbox.close();
-		}
-		else {
-			console.log("Amount is not comple, so we do NOT close popup and reload it.");
-			location.reload();
-		}
+
+		console.log("Close popup");
+		parent.$.colorbox.close();
 	}
 
 	function ValidateSumup() {
