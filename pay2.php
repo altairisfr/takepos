@@ -229,12 +229,15 @@ if ($conf->global->TAKEPOS_NUMPAD == 0) {
 		var invoiceid = <?php echo ($invoiceid > 0 ? $invoiceid : 0); ?>;
 		var accountid = $("#selectaccountid").val();
 
+		parent.$.colorbox.paymentok = true;
+
 		for (i = 0; i < payments.length; i++) {
 			parent.$("#poslines").load("invoice.php?place=<?php echo $place; ?>&action=valid&pay="+payments[i].mode+"&amount="+payments[i].amount+"&invoiceid="+invoiceid+"&accountid="+accountid)
 		}
 
 		console.log("Close popup");
 		parent.$.colorbox.close();
+		parent.$.paymentok = false;
 	}
 
 	function ValidateSumup() {

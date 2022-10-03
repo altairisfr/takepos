@@ -541,16 +541,20 @@ function CloseBill() {
 	?>
 	invoiceid = $("#invoiceid").val();
 	console.log("Open popup to enter payment on invoiceid="+invoiceid);
-	var originalClose = $.colorbox.close;
-	$.colorbox.close = function() {
-		var response;
-		response = confirm("<?php echo $langs->trans('ConfirmClosePayment'); ?>");
-		if(!response){
-		  return; // Do nothing.
-		}
-		originalClose();
-		$.colorbox.close = originalClose;
-	};
+	<?php  if ($conf->global->TAKEPOS_USE_NEW_PAYMENT_SCREEN) { ?>
+		var originalClose = $.colorbox.close;
+		$.colorbox.close = function() {
+			if ( ! $.colorbox.paymentok) {
+				var response;
+				response = confirm("<?php echo $langs->trans('ConfirmClosePayment'); ?>");
+				if(!response){
+				  return; // Do nothing.
+				}
+			}
+			originalClose();
+			$.colorbox.close = originalClose;
+		};
+	<?php } ?>
 	$.colorbox({href:"<?php echo $payurl; ?>?place="+place+"&invoiceid="+invoiceid, width:"80%", height:"90%", transition:"none", iframe:"true", title:"" });
 }
 
