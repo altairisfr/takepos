@@ -314,7 +314,7 @@ $action_buttons = array(
 		"class" => "calcbutton2 poscolorblue"
 	),
 	"delete" => array(
-		"function" => "if (confirm('" . $langs->trans("ConfirmClose")."')) parent.$.colorbox.close();",
+		"function" => "parent.$.colorbox.close();",
 		"span" => "id='printtext' style='font-weight: bold; font-size: 18pt;'",
 		"text" => "X",
 		"class" => "calcbutton2 poscolordelete"
