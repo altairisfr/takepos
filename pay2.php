@@ -241,6 +241,29 @@ if ($conf->global->TAKEPOS_NUMPAD == 0) {
 		});
 	}
 
+	function ValidAll()
+	{
+		var invoiceid = <?php echo ($invoiceid > 0 ? $invoiceid : 0); ?>;
+		var accountid = $("#selectaccountid").val();
+		var amountpayed = $("#change1").val();
+		var excess = $("#change2").val();
+		if (amountpayed > <?php echo $invoice->total_ttc; ?>) {
+			amountpayed = <?php echo $invoice->total_ttc; ?>;
+		}
+		console.log("We click on the payment mode to pay amount = "+amountpayed);
+		for (i = 0; i < payments.length; i++) {
+			parent.$("#poslines").load("invoice.php?place=<?php echo $place; ?>&action=valid&pay="+payments[i].mode+"&amount="+payments[i].amount+"&invoiceid="+invoiceid+"&accountid="+accountid)
+		}
+		if (amountpayed > <?php echo $remaintopay; ?> || amountpayed == <?php echo $remaintopay; ?> || amountpayed==0 ) {
+			console.log("Close popup");
+			parent.$.colorbox.close();
+		}
+		else {
+			console.log("Amount is not comple, so we do NOT close popup and reload it.");
+			location.reload();
+		}
+	}
+
 	function ValidateSumup() {
 		console.log("Launch ValidateSumup");
 		<?php $_SESSION['SMP_CURRENT_PAYMENT'] = "NEW" ?>
@@ -324,7 +347,7 @@ $action_buttons = array(
 		"class" => "calcbutton2 poscolordelete"
 	),
 	"validate" => array(
-		"function" => "valid();",
+		"function" => "ValidAll();",
 		"span" => "id='printtext' style='font-weight: bold; font-size: 18pt;'",
 		"text" => $langs->trans('Validate'),
 		"class" => "calcbutton2 poscolorvalid"
