@@ -232,7 +232,7 @@ if ($conf->global->TAKEPOS_NUMPAD == 0) {
 		parent.$.colorbox.paymentok = true;
 
 		for (i = 0; i < payments.length; i++) {
-			parent.$("#poslines").load("invoice.php?place=<?php echo $place; ?>&action=valid&pay="+payments[i].mode+"&amount="+payments[i].amount+"&invoiceid="+invoiceid+"&accountid="+accountid)
+			parent.$("#poslines").load("invoice.php?place=<?php echo $place; ?>&action=valid&pay="+payments[i].mode+"&amount="+payments[i].amount+"&invoiceid="+invoiceid+"&accountid="+accountid);
 		}
 
 		console.log("Close popup");
