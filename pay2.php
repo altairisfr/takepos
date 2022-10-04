@@ -238,6 +238,7 @@ if ($conf->global->TAKEPOS_NUMPAD == 0) {
 		console.log("Close popup");
 		parent.$.colorbox.close();
 		parent.$.paymentok = false;
+		parent.$("#idcustomer").val("");
 	}
 
 	function ValidateSumup() {
