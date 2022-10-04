@@ -1657,7 +1657,7 @@ if ($placeid > 0) {
 
 print '</table>';
 
-if (($action == "valid" || $action == "history") && $invoice->type != Facture::TYPE_CREDIT_NOTE) {
+if (($action == "valid" || $action == "history") && $invoice->type != Facture::TYPE_CREDIT_NOTE && empty($conf->global->TAKEPOS_NO_CREDITNOTE)) {
 	print '<button id="buttonprint" type="button" onclick="ModalBox(\'ModalCreditNote\')">'.$langs->trans('CreateCreditNote').'</button>';
 	if (getDolGlobalString('TAKEPOS_PRINT_INVOICE')) {
 		print ' <a target="_blank" class="button" href="' . DOL_URL_ROOT . '/document.php?modulepart=facture&file=' . $invoice->ref . '/' . $invoice->ref . '.pdf">Invoice</a>';
