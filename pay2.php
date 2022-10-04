@@ -350,7 +350,7 @@ print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad 
 print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '3' : '0.50').');">'.($numpad == 0 ? '3' : '0.50').'</button>';
 
 $button = $action_buttons['validate'];
-print '<button type="button" class="'.$button["class"].'" onclick="'.$button["function"].'"><span '.$button["span"].'>'.$button["text"].'</span></button>';
+print '<button id="validAll" type="button" class="'.$button["class"].'" onclick="'.$button["function"].'"><span '.$button["span"].'>'.$button["text"].'</span></button>';
 
 print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '0' : '0.01').');">'.($numpad == 0 ? '0' : '0.01').'</button>';
 print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '\'000\'' : '0.02').');">'.($numpad == 0 ? '000' : '0.02').'</button>';
