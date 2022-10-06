@@ -525,6 +525,7 @@ function Reduction() {
 function CloseBill() {
 	<?php if ($conf->global->TAKEPOS_NO_GENERIC_THIRDPARTY) { ?>
 		if ($("#idcustomer").val() == "") {
+			alert("<?php echo $langs->trans('TakePosCustomerMandatory'); ?>");
 			<?php if ($conf->global->TAKEPOS_CHOOSE_CONTACT) { ?>
 				Contact();
 			<?php } else { ?>

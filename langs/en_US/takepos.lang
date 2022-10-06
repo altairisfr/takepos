@@ -6,3 +6,4 @@ ConfirmClosePayment=Are you sure you want to delete this payment ?
 PaymentList=Payment list
 AlreadyPayed=Already payed
 PaymentNotComplete=Payment not complete
+TakePosCustomerMandatory=You must choose a customer
