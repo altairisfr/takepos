@@ -83,7 +83,7 @@ $langs->loadLangs(array('main', 'bills', 'cashdesk'));
 
 if (!isset($conf->global->TAKEPOS_NUMPAD_USE_PAYMENT_ICON) || !empty($conf->global->TAKEPOS_NUMPAD_USE_PAYMENT_ICON)) {
 	$htmlReductionPercent = '<span class="fa fa-2x fa-percent"></span>';
-	$htmlReductionAmount = '<span class="fa fa-2x fa-money"></span><br>'.$langs->trans('Amount');
+	$htmlReductionAmount = '<span class="fa fa-2x fa-money"></span><br>'.$langs->trans('AmountTTC');
 } else {
 	$htmlReductionPercent = $langs->trans('ReductionShort').'<br>%';
 	$htmlReductionAmount = $langs->trans('ReductionShort').'<br>'.$langs->trans('Amount');
@@ -227,7 +227,7 @@ if (!isset($conf->global->TAKEPOS_NUMPAD_USE_PAYMENT_ICON) || !empty($conf->glob
 <center>
 <?php
 	print '<input type="text" class="takepospay" id="reduction_total" name="reduction_total" size="10" placeholder="'.$langs->trans('Reduction').'">';
-	print '<input type="button" class="button" value="Amount" onclick="return formvalid(\'amount\');">';
+	print '<input type="button" class="button" value="'.$langs->trans('AmountTTC').'" onclick="return formvalid(\'amount\');">';
 	print '<input type="button" class="button" value="%" onclick="return formvalid(\'percent\');">';
 ?>
 </center>
