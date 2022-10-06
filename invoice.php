@@ -1158,6 +1158,9 @@ $( document ).ready(function() {
 			}
 		}
 	}
+	else {
+		print '$("#idcustomer").val("");';
+	}
 	?>
 
 	$("#customerandsales").html('');
