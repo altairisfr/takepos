@@ -1145,7 +1145,7 @@ $( document ).ready(function() {
 	console.log("Set customer info and sales in header placeid=<?php echo $placeid; ?> status=<?php echo $invoice->statut; ?>");
 
 	<?php
-	$s = getDolGlobalString('TAKEPOS_CHOOSE_THIRDPARTY') ? '' : $langs->trans("Choose Customer");
+	$s = getDolGlobalString('TAKEPOS_CHOOSE_THIRDPARTY') ? '' : $langs->trans("ChooseCustomer");
 	if ($invoice->id > 0 && ($invoice->socid != $conf->global->$constforcompanyid)) {
 		$s = $soc->name;
 		if (getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) {

@@ -7,3 +7,4 @@ PaymentList=Payment list
 AlreadyPayed=Already payed
 PaymentNotComplete=Payment not complete
 TakePosCustomerMandatory=You must choose a customer
+ChooseCustomer=<span style="background-color: red;">Choose customer</span>
