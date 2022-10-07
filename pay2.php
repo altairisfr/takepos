@@ -214,7 +214,7 @@ if ($conf->global->TAKEPOS_NUMPAD == 0) {
 		alreadypayed += price2numjs(received, 'MT');
 		remaintopay -= price2numjs(received, 'MT');
 		$("#remaintopaydisplay").html(price2numjs(remaintopay) + " <?php echo $conf->currency; ?>");
-		$("#alreadypayeddisplay").html(alreadypayed + " <?php echo $conf->currency; ?>");
+		$("#alreadypayeddisplay").html(price2numjs(alreadypayed) + " <?php echo $conf->currency; ?>");
 		$(".change1").html(price2numjs(0, 'MT'));
 		received="";
 	}
