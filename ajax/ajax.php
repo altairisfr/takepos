@@ -62,14 +62,14 @@ $hookmanager->initHooks(array('takeposproductsearch'));
  */
 if ($action == 'closeTerminal') {
 	if ($conf->global->{'TAKEPOS_LOCK_TERMINAL_' . $_SESSION["takeposterminal"]}) {
-		dolibarr_set_const($db, 'TAKEPOS_TERMINAL_LOCKED_' . $_SESSION["takeposterminal"], '', 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, 'TAKEPOS_TERMINAL_LOCKED_' . $_SESSION["takeposterminal"], '0', 'chaine', 1, '', $conf->entity);
 	}
 	unset($_SESSION["takeposterminal"]);
 	exit;
 }
 
 if ($action == 'lockTerminal') {
-	dolibarr_set_const($db, 'TAKEPOS_TERMINAL_LOCKED_' . GETPOST('term'), $user->login, 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, 'TAKEPOS_TERMINAL_LOCKED_' . GETPOST('term'), $user->login, 'chaine', 1, '', $conf->entity);
 	exit;
 }
 
