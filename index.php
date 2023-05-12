@@ -1136,7 +1136,7 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 <div id="ModalTerminal" class="modal">
 	<div class="modal-content">
 		<div class="modal-header">
-		<span class="close" href="#" onclick="document.getElementById('ModalTerminal').style.display = 'none';">&times;</span>
+		<!-- <span class="close" href="#" onclick="document.getElementById('ModalTerminal').style.display = 'none';">&times;</span> -->
 		<h3><?php print $langs->trans("TerminalSelect"); ?></h3>
 	</div>
 	<div class="modal-body">
