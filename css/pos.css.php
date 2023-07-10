@@ -101,7 +101,7 @@ button.calcbutton2.poscolordelete {
 	color: #fff;*/
 }
 
-button.calcbutton2.poscolorvalid, button.calcbutton2.poscolorvalid {
+button.calcbutton2.poscolorvalid {
 	background-color: green;
 	color: #fff;
 }
@@ -204,7 +204,7 @@ button.actionbutton {
 	vertical-align: middle;
 	text-align: center;
 	overflow: visible; /* removes extra width in IE */
-	width: calc(<?php print getDolGlobalString('TAKEPOS_BIG_CART') ? '100':'33.33' ?>% - 2px);
+	width: calc(33.33% - 2px);
 	height: calc(25% - 2px);
 	margin: 1px;
 	   border-width: 0;
@@ -374,7 +374,7 @@ div.paymentbordline
 
 .div1{
 	height:100%;
-	width: <?php print getDolGlobalString('TAKEPOS_BIG_CART') ? '57':'34' ?>%;
+	width: 34%;
 	float: left;
 	text-align: center;
 	box-sizing: border-box;
@@ -402,7 +402,7 @@ div.paymentbordline
 
 .div3{
 	height: 100%;
-	width: <?php print getDolGlobalString('TAKEPOS_BIG_CART') ? '10':'33' ?>%;
+	width: 33%;
 	float: left;
 	box-sizing: border-box;
 	padding-top: 0;

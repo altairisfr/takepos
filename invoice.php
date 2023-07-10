@@ -942,7 +942,7 @@ if (empty($reshook)) {
 			}
 		}
 		$sectionwithinvoicelink .= '</span><br>';
-		if (getDolGlobalString('TAKEPOS_PRINT_INVOICE')) {
+		if (getDolGlobalInt('TAKEPOS_PRINT_INVOICE_DOC_INSTEAD_OF_RECEIPT')) {
 			$sectionwithinvoicelink .= ' <a target="_blank" class="button" href="' . DOL_URL_ROOT . '/document.php?modulepart=facture&file=' . $invoice->ref . '/' . $invoice->ref . '.pdf">Invoice</a>';
 		} elseif (getDolGlobalString('TAKEPOS_PRINT_METHOD') == "takeposconnector") {
 			if (getDolGlobalString('TAKEPOS_PRINT_SERVER') && filter_var($conf->global->TAKEPOS_PRINT_SERVER, FILTER_VALIDATE_URL) == true) {
@@ -1168,9 +1168,9 @@ $( document ).ready(function() {
 	$("#customerandsales").html('');
 
 	<?php if ( ! getDolGlobalString('TAKEPOS_CHOOSE_CONTACT')) { ?>
-		$("#customerandsales").append('<a class="valignmiddle tdoverflowmax300 minwidth100" style="font-size: 1em; font-weight: bolder;" id="customer" onclick="Customer();" title="<?php print dol_escape_js($s); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s); ?></a>');
+		$("#customerandsales").append('<a class="valignmiddle tdoverflowmax300 minwidth100" id="customer" onclick="Customer();" title="<?php print dol_escape_js($s); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s); ?></a>');
 	<?php } else { ?>
-		$("#customerandsales").append('<a class="valignmiddle tdoverflowmax500 minwidth100" style="font-size: 1.5em; font-weight: bolder;" id="contact" onclick="Contact();" title="<?php print dol_escape_js($s); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s); ?></a>');
+		$("#customerandsales").append('<a class="valignmiddle tdoverflowmax500 minwidth100" id="contact" onclick="Contact();" title="<?php print dol_escape_js($s); ?>"><span class="fas fa-building paddingrightonly"></span><?php print dol_escape_js($s); ?></a>');
 	<?php } ?>
 
 	<?php

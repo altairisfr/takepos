@@ -2,6 +2,7 @@
 /* Copyright (C) 2018	Andreu Bisquerra	<jove@bisquerra.com>
  * Copyright (C) 2019	Josep Lluís Amador	<joseplluis@lliuretic.cat>
  * Copyright (C) 2020	Thibault FOUCART	<support@ptibogxiv.net>
+ * Copyright (C) 2023   Christophe Battarel <christophe.battarel@altairis.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1136,7 +1137,11 @@ if (empty($conf->global->TAKEPOS_HIDE_HEAD_BAR)) {
 <div id="ModalTerminal" class="modal">
 	<div class="modal-content">
 		<div class="modal-header">
-		<!-- <span class="close" href="#" onclick="document.getElementById('ModalTerminal').style.display = 'none';">&times;</span> -->
+		<?php
+		if (empty($conf->global->TAKEPOS_FORCE_TERMINAL_SELECT)) {
+		?>
+			<span class="close" href="#" onclick="document.getElementById('ModalTerminal').style.display = 'none';">&times;</span>
+		<?php } ?>
 		<h3><?php print $langs->trans("TerminalSelect"); ?></h3>
 	</div>
 	<div class="modal-body">
