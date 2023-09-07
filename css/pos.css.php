@@ -762,3 +762,28 @@ div#moreinfo, div#infowarehouse {
   text-align: center;
   margin: 2px;
 }
+
+<?php
+if ($conf->global->TAKEPOS_BIG_CART) {
+?>
+body.bodytakepos .div1.centpercent {
+	width: 100% !important;
+}
+body.bodytakepos button.actionbutton {
+	width: calc(100% - 2px) !important;
+}
+
+body.bodytakepos .div1 {
+	width: 57% !important;
+}
+
+body.bodytakepos .div3 {
+	width: 10% !important;
+}
+<?php
+}
+?>
+
+body.bodytakepos #customerandsales {
+	font-size: 1.5em; font-weight: bolder !important;
+}
